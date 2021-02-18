@@ -35,18 +35,22 @@ type Network struct {
 
 // EADefinition extensible attribute definition
 type EADefinition struct {
-	Ref                string `json:"_ref,omitempty"`
-	AllowedObjectTypes string `json:"allowed_object_types,omitempty"`
-	Comment            string `json:"comment,omitempty"`
-	DefaultValue       string `json:"default_value,omitempty"`
-	DescendantsAction  string `json:"descendants_action,omitempty"`
-	Flags              string `json:"flags,omitempty"`
-	ListValues         string `json:"list_values,omitempty"`
-	Max                string `json:"max,omitempty"`
-	Min                string `json:"min,omitempty"`
-	Name               string `json:"name,omitempty"`
-	Namespace          string `json:"namespace,omitempty"`
-	Type               string `json:"type,omitempty"`
+	Ref                string      `json:"_ref,omitempty"`
+	AllowedObjectTypes string      `json:"allowed_object_types,omitempty"`
+	Comment            string      `json:"comment,omitempty"`
+	DefaultValue       string      `json:"default_value,omitempty"`
+	DescendantsAction  string      `json:"descendants_action,omitempty"`
+	Flags              string      `json:"flags,omitempty"`
+	ListValues         []ListValue `json:"list_values,omitempty"`
+	Max                string      `json:"max,omitempty"`
+	Min                string      `json:"min,omitempty"`
+	Name               string      `json:"name,omitempty"`
+	Namespace          string      `json:"namespace,omitempty"`
+	Type               string      `json:"type,omitempty"`
+}
+
+type ListValue struct {
+	Value string `json:"value,omitempty"`
 }
 
 // HostRecord object

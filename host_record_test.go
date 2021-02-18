@@ -1,4 +1,4 @@
-// +build all unittests
+// +build all unittests specific
 
 package infoblox
 
@@ -49,7 +49,7 @@ var (
 )
 
 func TestCreateHostRecord(t *testing.T) {
-	err := networkClient.CreateNetwork(&hostRecordTestNetwork)
+	err := hostRecordClient.CreateNetwork(&hostRecordTestNetwork)
 	if err != nil {
 		t.Errorf("Error creating network: %s", err)
 	}
@@ -65,6 +65,11 @@ func TestGetHostRecord(t *testing.T) {
 		t.Errorf("Error retrieving host record: %s", err)
 	}
 	prettyPrint(record)
+	flattenedEAs, err := hostRecordClient.ConvertEAsToJSONString(*record.ExtensibleAttributes)
+	if err != nil {
+		t.Errorf("Error flattening eas for host record: %s", err)
+	}
+	prettyPrint(flattenedEAs)
 }
 
 func TestUpdateHostRecord(t *testing.T) {
@@ -89,7 +94,7 @@ func TestUpdateHostRecord(t *testing.T) {
 }
 
 func TestDeleteHostRecord(t *testing.T) {
-	err := networkClient.DeleteNetwork(hostRecordTestNetwork.Ref)
+	err := hostRecordClient.DeleteNetwork(hostRecordTestNetwork.Ref)
 	if err != nil {
 		t.Errorf("Error deleting network: %s", err)
 	}
