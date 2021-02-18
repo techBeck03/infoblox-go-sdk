@@ -15,10 +15,10 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 
 	if queryParams == nil {
 		queryParams = map[string]string{
-			"_return_fields": "ipv4addrs,extattrs,name,view",
+			"_return_fields": "ipv4addrs,extattrs,name,view,network_view,comment",
 		}
 	} else {
-		queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view"
+		queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view,network_view,comment"
 	}
 
 	queryParamString := c.BuildQuery(queryParams)
@@ -38,7 +38,7 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 // GetHostRecordByQuery gets host record by reference
 func (c *Client) GetHostRecordByQuery(queryParams map[string]string) (HostRecord, error) {
 	var ret HostRecord
-	queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view"
+	queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view,network_view,comment"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", hostRecordBasePath, queryParamString), nil)
@@ -57,7 +57,7 @@ func (c *Client) GetHostRecordByQuery(queryParams map[string]string) (HostRecord
 // CreateHostRecord creates host record
 func (c *Client) CreateHostRecord(hostRecord *HostRecord) error {
 	queryParams := map[string]string{
-		"_return_fields": "ipv4addrs,extattrs,name,view",
+		"_return_fields": "ipv4addrs,extattrs,name,view,network_view,comment",
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", hostRecordBasePath, queryParamString), hostRecord)
@@ -76,7 +76,7 @@ func (c *Client) CreateHostRecord(hostRecord *HostRecord) error {
 func (c *Client) UpdateHostRecord(ref string, hostRecord HostRecord) (HostRecord, error) {
 	var ret HostRecord
 	queryParams := map[string]string{
-		"_return_fields": "ipv4addrs,extattrs,name,view",
+		"_return_fields": "ipv4addrs,extattrs,name,view,network_view,comment",
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodPut, fmt.Sprintf("%s?%s", ref, queryParamString), hostRecord)
