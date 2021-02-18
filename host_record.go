@@ -10,13 +10,38 @@ const (
 )
 
 // GetHostRecordByRef gets host record by reference
-func (c *Client) GetHostRecordByRef(ref string) (HostRecord, error) {
+func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (HostRecord, error) {
 	var ret HostRecord
-	queryParams := map[string]string{
-		"_return_fields": "ipv4addrs,extattrs,name,view",
+
+	if queryParams == nil {
+		queryParams = map[string]string{
+			"_return_fields": "ipv4addrs,extattrs,name,view",
+		}
+	} else {
+		queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view"
 	}
+
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", ref, queryParamString), nil)
+	if err != nil {
+		return ret, err
+	}
+
+	err = c.Call(request, &ret)
+	if err != nil {
+		return ret, err
+	}
+
+	return ret, nil
+}
+
+// GetHostRecordByQuery gets host record by reference
+func (c *Client) GetHostRecordByQuery(queryParams map[string]string) (HostRecord, error) {
+	var ret HostRecord
+	queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view"
+
+	queryParamString := c.BuildQuery(queryParams)
+	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", hostRecordBasePath, queryParamString), nil)
 	if err != nil {
 		return ret, err
 	}

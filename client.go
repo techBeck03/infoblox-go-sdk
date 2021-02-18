@@ -22,10 +22,11 @@ type Config struct {
 
 // Client - base client for guacamole interactions
 type Client struct {
-	client  *http.Client
-	config  Config
-	baseURL string
-	cookies []*http.Cookie
+	client        *http.Client
+	config        Config
+	baseURL       string
+	cookies       []*http.Cookie
+	eaDefinitions []EADefinition
 }
 
 // New - creates a new guacamole client

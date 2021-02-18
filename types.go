@@ -14,6 +14,15 @@ type InheritanceSource struct {
 	Ref string `json:"_ref,omitempty"`
 }
 
+// ExtensibleAttributeJSONMap ea object in terraform friendly JSON
+type ExtensibleAttributeJSONMap map[string]ExtensibleAttributeJSONMapValue
+
+// ExtensibleAttributeJSONMapValue value of ea in terraform friendly JSON
+type ExtensibleAttributeJSONMapValue struct {
+	Value interface{} `json:"value,omitempty"`
+	Type  string      `json:"type,omitempty"`
+}
+
 // Network object
 type Network struct {
 	Ref                  string               `json:"_ref,omitempty"`

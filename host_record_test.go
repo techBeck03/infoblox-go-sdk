@@ -60,7 +60,7 @@ func TestCreateHostRecord(t *testing.T) {
 }
 
 func TestGetHostRecord(t *testing.T) {
-	record, err := hostRecordClient.GetHostRecordByRef(testHostRecord.Ref)
+	record, err := hostRecordClient.GetHostRecordByRef(testHostRecord.Ref, nil)
 	if err != nil {
 		t.Errorf("Error retrieving host record: %s", err)
 	}
