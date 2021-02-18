@@ -13,3 +13,7 @@ func prettyPrint(object interface{}) {
 func newExtensibleAttribute(ea ExtensibleAttribute) *ExtensibleAttribute {
 	return &ea
 }
+
+func newBool(b bool) *bool {
+	return &b
+}

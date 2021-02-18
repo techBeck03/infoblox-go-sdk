@@ -20,7 +20,7 @@ var (
 	testHostRecord   = HostRecord{
 		Hostname:    "test-api-1.auslab.cisco.com",
 		NetworkView: "default",
-		EnableDNS:   true,
+		EnableDNS:   newBool(true),
 		IPv4Addrs: []IPv4Addr{
 			{
 				//IPAddress: "func:nextavailableip:172.19.4.0/24",

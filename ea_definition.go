@@ -31,7 +31,6 @@ func (c *Client) GetEADefinitions(force bool) error {
 		return err
 	}
 
-	prettyPrint(ret)
 	c.eaDefinitions = ret
 
 	return nil
@@ -43,7 +42,6 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 	if len(c.eaDefinitions) == 0 {
 		c.GetEADefinitions(false)
 	}
-	prettyPrint(c.eaDefinitions)
 	for name, ea := range eas {
 		var target EADefinition
 		for _, def := range c.eaDefinitions {

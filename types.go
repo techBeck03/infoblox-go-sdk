@@ -30,7 +30,7 @@ type Network struct {
 	CIDR                 string               `json:"network,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 	Comment              string               `json:"comment,omitempty"`
-	RestartIfNeeded      bool                 `json:"restart_if_needed,omitempty"`
+	RestartIfNeeded      *bool                `json:"restart_if_needed,omitempty"`
 }
 
 // EADefinition extensible attribute definition
@@ -49,6 +49,7 @@ type EADefinition struct {
 	Type               string      `json:"type,omitempty"`
 }
 
+// ListValue defines possible list values
 type ListValue struct {
 	Value string `json:"value,omitempty"`
 }
@@ -58,11 +59,11 @@ type HostRecord struct {
 	Ref                  string               `json:"_ref,omitempty"`
 	Hostname             string               `json:"name,omitempty"`
 	Comment              string               `json:"comment,omitempty"`
-	EnableDNS            bool                 `json:"configure_for_dns,omitempty"`
+	EnableDNS            *bool                `json:"configure_for_dns,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 	IPv4Addrs            []IPv4Addr           `json:"ipv4addrs,omitempty"`
 	NetworkView          string               `json:"network_view,omitempty"`
-	RestartIfNeeded      bool                 `json:"restart_if_needed,omitempty"`
+	RestartIfNeeded      *bool                `json:"restart_if_needed,omitempty"`
 	View                 string               `json:"view,omitempty"`
 	Zone                 string               `json:"zone,omitempty"`
 }
@@ -73,9 +74,8 @@ type IPv4Addr struct {
 	Host             string                 `json:"host,omitempty"`
 	IPAddress        string                 `json:"ipv4addr,omitempty"`
 	Mac              string                 `json:"mac,omitempty"`
-	View             string                 `json:"view,omitempty"`
 	CIDR             string                 `json:"network,omitempty"`
-	ConfigureForDHCP bool                   `json:"configure_for_dns,omitempty"`
+	ConfigureForDHCP *bool                  `json:"configure_for_dhcp,omitempty"`
 	NextServer       string                 `json:"nextserver,omitempty"`
 	ObjectFunction   string                 `json:"_object_function,omitempty"`
 	Parameters       map[string]interface{} `json:"_parameters,omitempty"`
@@ -136,7 +136,7 @@ func (aq *AddressQuery) fillDefaults() {
 type Range struct {
 	Ref                  string               `json:"_ref,omitempty"`
 	Comment              string               `json:"comment,omitempty"`
-	DisableDHCP          bool                 `json:"disable,omitempty"`
+	DisableDHCP          *bool                `json:"disable,omitempty"`
 	StartAddress         string               `json:"start_addr,omitempty"`
 	EndAddress           string               `json:"end_addr,omitempty"`
 	NetworkView          string               `json:"network_view,omitempty"`

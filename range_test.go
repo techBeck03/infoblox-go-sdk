@@ -23,7 +23,7 @@ var (
 		StartAddress: "172.19.4.10",
 		EndAddress:   "172.19.4.20",
 		Comment:      "Test Block",
-		DisableDHCP:  true,
+		DisableDHCP:  newBool(true),
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Owner": ExtensibleAttributeValue{
 				Value: "testUser",

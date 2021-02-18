@@ -7,7 +7,7 @@ import (
 
 const (
 	hostRecordBasePath     = "record:host"
-	hostRecordReturnFields = "name,view,network_view,comment,ipv4addrs,ipv4addrs.host,ipv4addrs.network,ipv4addrs.ipv4addr,ipv4addrs.mac,ipv4addrs.configure_for_dhcp,ipv4addrs.nextserver,extattrs"
+	hostRecordReturnFields = "name,view,network_view,configure_for_dns,comment,ipv4addrs,ipv4addrs.host,ipv4addrs.network,ipv4addrs.ipv4addr,ipv4addrs.mac,ipv4addrs.configure_for_dhcp,ipv4addrs.nextserver,extattrs"
 )
 
 // GetHostRecordByRef gets host record by reference
@@ -19,7 +19,7 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 			"_return_fields": hostRecordReturnFields,
 		}
 	} else {
-		queryParams["_return_fields"] = "ipv4addrs,extattrs,name,view,network_view,comment"
+		queryParams["_return_fields"] = hostRecordReturnFields
 	}
 
 	queryParamString := c.BuildQuery(queryParams)

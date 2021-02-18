@@ -32,7 +32,7 @@ var (
 		StartAddress: "172.19.4.10",
 		EndAddress:   "172.19.4.20",
 		Comment:      "Test Block",
-		DisableDHCP:  true,
+		DisableDHCP:  newBool(true),
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Owner": ExtensibleAttributeValue{
 				Value: "testUser",
@@ -55,7 +55,7 @@ var (
 	ipv4AddressHostRecord = HostRecord{
 		Hostname:    "test-api-12.auslab.cisco.com",
 		NetworkView: "default",
-		EnableDNS:   true,
+		EnableDNS:   newBool(true),
 		IPv4Addrs: []IPv4Addr{
 			{
 				//IPAddress: "func:nextavailableip:172.19.4.0/24",
