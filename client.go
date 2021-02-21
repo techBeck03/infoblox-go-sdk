@@ -27,7 +27,7 @@ type Client struct {
 	baseURL         string
 	cookies         []*http.Cookie
 	eaDefinitions   []EADefinition
-	orchestratorEAs *ExtensibleAttribute
+	OrchestratorEAs *ExtensibleAttribute
 }
 
 // New - creates a new guacamole client
