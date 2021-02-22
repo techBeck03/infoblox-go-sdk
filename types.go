@@ -70,7 +70,7 @@ type Network struct {
 // Member defines grid members
 type Member struct {
 	StructType  string `json:"_struct,omitempty"`
-	Name        string `json:"name,omitempty"`
+	Hostname    string `json:"name,omitempty"`
 	IPV4Address string `json:"ipv4addr,omitempty"`
 	IPV6Address string `json:"ipv6addr,omitempty"`
 }
