@@ -62,6 +62,7 @@ type Network struct {
 	Comment               string               `json:"comment,omitempty"`
 	RestartIfNeeded       *bool                `json:"restart_if_needed,omitempty"`
 	AutoCreateReverseZone *bool                `json:"auto_create_reversezone,omitempty"`
+	DisableDHCP           *bool                `json:"disable,omitempty"`
 	Members               []Member             `json:"members,omitempty"`
 	Options               []Option             `json:"options,omitempty"`
 }

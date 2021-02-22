@@ -1,4 +1,4 @@
-// +build all unittests
+// +build all unittests specific
 
 package infoblox
 
@@ -40,7 +40,7 @@ func TestCreateNetwork(t *testing.T) {
 }
 
 func TestGetNetwork(t *testing.T) {
-	network, err := networkClient.GetNetworkByRef(testNetwork.Ref)
+	network, err := networkClient.GetNetworkByRef(testNetwork.Ref, nil)
 	if err != nil {
 		t.Errorf("Error retrieving network: %s", err)
 	}
