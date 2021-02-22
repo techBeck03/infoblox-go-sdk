@@ -37,10 +37,19 @@ func (c *Client) GetGrids(queryParams map[string]string) ([]Grid, error) {
 }
 
 // GetGridMembers gets grid member list
-func (c *Client) GetGridMembers() ([]GridMember, error) {
+func (c *Client) GetGridMembers(queryParams map[string]string) ([]GridMember, error) {
 	var ret []GridMember
 
-	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s", memberBasePath), nil)
+	if queryParams == nil {
+		queryParams = map[string]string{
+			"_return_fields": gridReturnFields,
+		}
+	} else {
+		queryParams["_return_fields"] = gridReturnFields
+	}
+
+	queryParamString := c.BuildQuery(queryParams)
+	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", memberBasePath, queryParamString), nil)
 	if err != nil {
 		return ret, err
 	}

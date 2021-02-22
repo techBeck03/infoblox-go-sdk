@@ -55,16 +55,14 @@ type ExtensibleAttributeJSONMapValue struct {
 
 // Network object
 type Network struct {
-	Ref                   string               `json:"_ref,omitempty"`
-	NetworkView           string               `json:"network_view,omitempty"`
-	CIDR                  string               `json:"network,omitempty"`
-	ExtensibleAttributes  *ExtensibleAttribute `json:"extattrs,omitempty"`
-	Comment               string               `json:"comment,omitempty"`
-	RestartIfNeeded       *bool                `json:"restart_if_needed,omitempty"`
-	AutoCreateReverseZone *bool                `json:"auto_create_reversezone,omitempty"`
-	DisableDHCP           *bool                `json:"disable,omitempty"`
-	Members               []Member             `json:"members,omitempty"`
-	Options               []Option             `json:"options,omitempty"`
+	Ref                  string               `json:"_ref,omitempty"`
+	NetworkView          string               `json:"network_view,omitempty"`
+	CIDR                 string               `json:"network,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	Comment              string               `json:"comment,omitempty"`
+	DisableDHCP          *bool                `json:"disable,omitempty"`
+	Members              []Member             `json:"members,omitempty"`
+	Options              []Option             `json:"options,omitempty"`
 }
 
 // Member defines grid members

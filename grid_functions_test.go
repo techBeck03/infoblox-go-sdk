@@ -49,7 +49,7 @@ var (
 )
 
 func TestGridCreateNetwork(t *testing.T) {
-	members, err := gridClient.GetGridMembers()
+	members, err := gridClient.GetGridMembers(nil)
 	if err != nil {
 		t.Errorf("Error retrieving grid members: %s", err)
 	}
