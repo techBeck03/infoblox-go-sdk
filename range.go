@@ -9,7 +9,7 @@ const (
 	rangeBasePath = "range"
 )
 
-// GetRangeByRef gets host record by reference
+// GetRangeByRef gets range by reference
 func (c *Client) GetRangeByRef(ref string) (Range, error) {
 	var ret Range
 	queryParams := map[string]string{
@@ -29,7 +29,7 @@ func (c *Client) GetRangeByRef(ref string) (Range, error) {
 	return ret, nil
 }
 
-// CreateRange creates host record
+// CreateRange creates range
 func (c *Client) CreateRange(rangeObject *Range) error {
 	queryParams := map[string]string{
 		"_return_fields": "network,network_view,start_addr,end_addr,disable,comment,extattrs",
@@ -47,7 +47,7 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 	return nil
 }
 
-// UpdateRange creates host record
+// UpdateRange creates range
 func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 	var ret Range
 	queryParams := map[string]string{
@@ -66,7 +66,7 @@ func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 	return ret, nil
 }
 
-// DeleteRange creates host record
+// DeleteRange creates range
 func (c *Client) DeleteRange(ref string) error {
 	request, err := c.CreateJSONRequest(http.MethodDelete, fmt.Sprintf("%s", ref), nil)
 	if err != nil {

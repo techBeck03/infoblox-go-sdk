@@ -6,16 +6,23 @@ import (
 )
 
 const (
-	networkBasePath = "network"
+	networkBasePath     = "network"
+	networkReturnFields = "network,network_view,comment,extattrs,members,options"
 )
 
-// GetNetworkByRef gets host record by reference
-func (c *Client) GetNetworkByRef(ref string) (Network, error) {
+// GetNetworkByRef gets network by reference
+func (c *Client) GetNetworkByRef(ref string, queryParams map[string]string) (Network, error) {
 	var ret Network
-	queryParams := map[string]string{
-		"_return_fields": "network,network_view,comment,extattrs",
+	if queryParams == nil {
+		queryParams = map[string]string{
+			"_return_fields": networkReturnFields,
+		}
+	} else {
+		queryParams["_return_fields"] = networkReturnFields
 	}
+
 	queryParamString := c.BuildQuery(queryParams)
+
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", ref, queryParamString), nil)
 	if err != nil {
 		return ret, err
@@ -29,10 +36,29 @@ func (c *Client) GetNetworkByRef(ref string) (Network, error) {
 	return ret, nil
 }
 
-// CreateNetwork creates host record
+// GetNetworkByQuery gets network by reference
+func (c *Client) GetNetworkByQuery(queryParams map[string]string) ([]Network, error) {
+	var ret []Network
+	queryParams["_return_fields"] = networkReturnFields
+
+	queryParamString := c.BuildQuery(queryParams)
+	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", networkBasePath, queryParamString), nil)
+	if err != nil {
+		return ret, err
+	}
+
+	err = c.Call(request, &ret)
+	if err != nil {
+		return ret, err
+	}
+
+	return ret, nil
+}
+
+// CreateNetwork creates network
 func (c *Client) CreateNetwork(network *Network) error {
 	queryParams := map[string]string{
-		"_return_fields": "network,network_view,comment,extattrs",
+		"_return_fields": networkReturnFields,
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", networkBasePath, queryParamString), network)
@@ -47,11 +73,11 @@ func (c *Client) CreateNetwork(network *Network) error {
 	return nil
 }
 
-// UpdateNetwork creates host record
+// UpdateNetwork creates network
 func (c *Client) UpdateNetwork(ref string, network Network) (Network, error) {
 	var ret Network
 	queryParams := map[string]string{
-		"_return_fields": "network,network_view,comment,extattrs",
+		"_return_fields": networkReturnFields,
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodPut, fmt.Sprintf("%s?%s", ref, queryParamString), network)
@@ -66,7 +92,7 @@ func (c *Client) UpdateNetwork(ref string, network Network) (Network, error) {
 	return ret, nil
 }
 
-// DeleteNetwork creates host record
+// DeleteNetwork creates network
 func (c *Client) DeleteNetwork(ref string) error {
 	request, err := c.CreateJSONRequest(http.MethodDelete, fmt.Sprintf("%s", ref), nil)
 	if err != nil {

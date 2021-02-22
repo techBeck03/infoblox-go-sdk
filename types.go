@@ -1,5 +1,35 @@
 package infoblox
 
+// Grid defines grid properties
+type Grid struct {
+	Ref                string             `json:"_ref,omitempty"`
+	Name               string             `json:"name,omitempty"`
+	ServiceStatus      string             `json:"service_status,omitempty"`
+	DNSResolverSetting DNSResolverSetting `json:"dns_resolver_setting,omitempty"`
+}
+
+// DNSResolverSetting defines grid dns resolver configuration
+type DNSResolverSetting struct {
+	Resolvers     []string `json:"resolvers,omitempty"`
+	SearchDomains []string `json:"search_domains,omitempty"`
+}
+
+// GridMember defines grid member properties
+type GridMember struct {
+	Ref                      string `json:"_ref,omitempty"`
+	Hostname                 string `json:"host_name,omitempty"`
+	ConfigAddressType        string `json:"config_addr_type,omitempty"`
+	Platform                 string `json:"platform,omitempty"`
+	ServiceTypeConfiguration string `json:"service_type_configuration,omitempty"`
+}
+
+// GridServiceRestartRequest defines properties for grid restart request
+type GridServiceRestartRequest struct {
+	RestartOption string   `json:"restart_option,omitempty"`
+	Services      []string `json:"services,omitempty"`
+	Members       []string `json:"members,omitempty"`
+}
+
 // ExtensibleAttribute extensible attribute object
 type ExtensibleAttribute map[string]ExtensibleAttributeValue
 
@@ -25,12 +55,30 @@ type ExtensibleAttributeJSONMapValue struct {
 
 // Network object
 type Network struct {
-	Ref                  string               `json:"_ref,omitempty"`
-	NetworkView          string               `json:"network_view,omitempty"`
-	CIDR                 string               `json:"network,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
-	Comment              string               `json:"comment,omitempty"`
-	RestartIfNeeded      *bool                `json:"restart_if_needed,omitempty"`
+	Ref                   string               `json:"_ref,omitempty"`
+	NetworkView           string               `json:"network_view,omitempty"`
+	CIDR                  string               `json:"network,omitempty"`
+	ExtensibleAttributes  *ExtensibleAttribute `json:"extattrs,omitempty"`
+	Comment               string               `json:"comment,omitempty"`
+	RestartIfNeeded       *bool                `json:"restart_if_needed,omitempty"`
+	AutoCreateReverseZone *bool                `json:"auto_create_reversezone,omitempty"`
+	Members               []Member             `json:"members,omitempty"`
+	Options               []Option             `json:"options,omitempty"`
+}
+
+// Member defines grid members
+type Member struct {
+	StructType string `json:"_struct,omitempty"`
+	Name       string `json:"name,omitempty"`
+	IPAddress  string `json:"ipv4addr,omitempty"`
+}
+
+// Option defines dhcp options
+type Option struct {
+	Name        string `json:"name,omitempty"`
+	UseOption   *bool  `json:"use_option,omitempty"`
+	Value       string `json:"value,omitempty"`
+	VendorClass string `json:"vendor_class,omitempty"`
 }
 
 // EADefinition extensible attribute definition
