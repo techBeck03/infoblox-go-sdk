@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	gridBasePath     = "grid"
-	memberBasePath   = "member"
-	gridReturnFields = "name,service_status,dns_resolver_setting"
+	gridBasePath       = "grid"
+	memberBasePath     = "member"
+	gridReturnFields   = "name,service_status,dns_resolver_setting"
+	memberReturnFields = "config_addr_type,host_name,platform,service_type_configuration"
 )
 
 // GetGrids gets grid member list
@@ -42,10 +43,10 @@ func (c *Client) GetGridMembers(queryParams map[string]string) ([]GridMember, er
 
 	if queryParams == nil {
 		queryParams = map[string]string{
-			"_return_fields": gridReturnFields,
+			"_return_fields": memberReturnFields,
 		}
 	} else {
-		queryParams["_return_fields"] = gridReturnFields
+		queryParams["_return_fields"] = memberReturnFields
 	}
 
 	queryParamString := c.BuildQuery(queryParams)
