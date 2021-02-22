@@ -69,14 +69,16 @@ type Network struct {
 
 // Member defines grid members
 type Member struct {
-	StructType string `json:"_struct,omitempty"`
-	Name       string `json:"name,omitempty"`
-	IPAddress  string `json:"ipv4addr,omitempty"`
+	StructType  string `json:"_struct,omitempty"`
+	Name        string `json:"name,omitempty"`
+	IPV4Address string `json:"ipv4addr,omitempty"`
+	IPV6Address string `json:"ipv6addr,omitempty"`
 }
 
 // Option defines dhcp options
 type Option struct {
 	Name        string `json:"name,omitempty"`
+	Code        int    `json:"num,omitempty"`
 	UseOption   *bool  `json:"use_option,omitempty"`
 	Value       string `json:"value,omitempty"`
 	VendorClass string `json:"vendor_class,omitempty"`
