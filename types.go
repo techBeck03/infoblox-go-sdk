@@ -139,6 +139,7 @@ type FixedAddress struct {
 	NetworkView          string               `json:"network_view,omitempty"`
 	CIDR                 string               `json:"network,omitempty"`
 	Comment              string               `json:"comment,omitempty"`
+	Disable              *bool                `json:"disable,omitempty"`
 	IPAddress            string               `json:"ipv4addr,omitempty"`
 	Mac                  string               `json:"mac,omitempty"`
 	Hostname             string               `json:"name,omitempty"`
