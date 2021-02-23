@@ -36,7 +36,7 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 	return ret, nil
 }
 
-// GetHostRecordByQuery gets host record by reference
+// GetHostRecordByQuery gets host record by query parameters
 func (c *Client) GetHostRecordByQuery(queryParams map[string]string) ([]HostRecord, error) {
 	var ret []HostRecord
 	queryParams["_return_fields"] = hostRecordReturnFields

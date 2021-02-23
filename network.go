@@ -36,7 +36,7 @@ func (c *Client) GetNetworkByRef(ref string, queryParams map[string]string) (Net
 	return ret, nil
 }
 
-// GetNetworkByQuery gets network by reference
+// GetNetworkByQuery gets network by query parameters
 func (c *Client) GetNetworkByQuery(queryParams map[string]string) ([]Network, error) {
 	var ret []Network
 	queryParams["_return_fields"] = networkReturnFields
