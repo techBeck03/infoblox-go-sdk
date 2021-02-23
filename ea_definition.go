@@ -53,8 +53,9 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 			return ret, fmt.Errorf("No ea definition found for ea: %s", name)
 		}
 		stringVal, _ := json.Marshal(ExtensibleAttributeJSONMapValue{
-			Type:  target.Type,
-			Value: ea.Value.(string),
+			Type:              target.Type,
+			Value:             ea.Value,
+			InheritanceSource: ea.InheritanceSource,
 		})
 		ret[name] = string(stringVal)
 	}
