@@ -37,8 +37,8 @@ func (c *Client) GetFixedAddressByRef(ref string, queryParams map[string]string)
 }
 
 // GetFixedAddressByQuery gets fixed address by query parameters
-func (c *Client) GetFixedAddressByQuery(queryParams map[string]string) (FixedAddress, error) {
-	var ret FixedAddress
+func (c *Client) GetFixedAddressByQuery(queryParams map[string]string) ([]FixedAddress, error) {
+	var ret []FixedAddress
 
 	queryParams["_return_fields"] = fixedAddressReturnFields
 
