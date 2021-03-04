@@ -194,3 +194,16 @@ type Range struct {
 	CIDR                 string               `json:"network,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
+
+// RangeQueryResult object
+type RangeQueryResult struct {
+	NextPageID string  `json:"next_page_id,omitempty"`
+	Results    []Range `json:"result,omitempty"`
+}
+
+// IPsWithinRangeQuery object
+type IPsWithinRangeQuery struct {
+	CIDR         string
+	StartAddress string
+	EndAddress   string
+}
