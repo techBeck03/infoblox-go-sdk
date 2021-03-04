@@ -203,6 +203,7 @@ type RangeQueryResult struct {
 
 // IPsWithinRangeQuery object
 type IPsWithinRangeQuery struct {
+	Ref          string
 	CIDR         string
 	StartAddress string
 	EndAddress   string

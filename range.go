@@ -139,7 +139,7 @@ func (c *Client) CheckIfRangeContainsRange(query IPsWithinRangeQuery) (bool, err
 
 	for matchFlag == false {
 		for _, addressRange := range ret.Results {
-			if ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.StartAddress) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.EndAddress) {
+			if addressRange.Ref != query.Ref && (ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.StartAddress) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.EndAddress)) {
 				matchFlag = true
 				break
 			}
