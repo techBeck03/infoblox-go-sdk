@@ -57,7 +57,7 @@ func TestCreateRange(t *testing.T) {
 }
 
 func TestGetRange(t *testing.T) {
-	rangeObject, err := rangeClient.GetRangeByRef(testRange.Ref)
+	rangeObject, err := rangeClient.GetRangeByRef(testRange.Ref, nil)
 	if err != nil {
 		t.Errorf("Error retrieving range: %s", err)
 	}
