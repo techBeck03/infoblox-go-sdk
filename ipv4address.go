@@ -32,6 +32,12 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		"_max_results":      "100",
 		"_return_fields":    "ip_address,network,network_view,status",
 	}
+	if query.StartAddress != "" {
+		queryParams["start_address>"] = query.StartAddress
+	}
+	if query.EndAddress != "" {
+		queryParams["end_address<"] = query.StartAddress
+	}
 	queryParamString := c.BuildQuery(queryParams)
 
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", ipv4AddressBasePath, queryParamString), nil)
