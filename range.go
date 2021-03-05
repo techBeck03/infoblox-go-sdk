@@ -149,7 +149,6 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		if err != nil {
 			return err
 		}
-		prettyPrint(sequentialAddresses)
 		rangeObject.StartAddress = (*sequentialAddresses)[0].IPAddress
 		rangeObject.EndAddress = (*sequentialAddresses)[len(*sequentialAddresses)-1].IPAddress
 
@@ -158,6 +157,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 			return err
 		}
 
+		log.Println("Pausing for race condition checks")
 		time.Sleep(1 * time.Second)
 
 		// Check for used addresses within range
