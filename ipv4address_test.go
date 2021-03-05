@@ -1,4 +1,4 @@
-// +build all unittests
+// +build all unittests specific
 
 package infoblox
 
@@ -19,7 +19,7 @@ var (
 	ipv4AddressClient          = New(ipv4AddressConfig)
 	ipv4AddressSequentialQuery = AddressQuery{
 		CIDR:  "172.16.106.0/24",
-		Count: 7,
+		Count: 20,
 	}
 	ipv4AddressVerifyQuery = AddressQuery{
 		CIDR:         "172.19.4.0/24",

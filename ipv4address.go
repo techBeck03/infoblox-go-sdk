@@ -2,9 +2,10 @@ package infoblox
 
 import (
 	"fmt"
+	"net"
 	"net/http"
-	"strconv"
-	"strings"
+
+	"github.com/techBeck03/go-ipmath"
 )
 
 const (
@@ -19,6 +20,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 	startIndex := -1
 	var endIndex int
 	matchFlag := false
+	rangeMatchFlag := false
 
 	query.fillDefaults()
 	queryParams := map[string]string{
@@ -42,6 +44,11 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		return &addresses, err
 	}
 
+	_, network, _ := net.ParseCIDR(query.CIDR)
+	rangePage, err := c.GetPaginatedCidrRanges(query.CIDR, "")
+	if err != nil {
+		return &addresses, err
+	}
 	for matchFlag == false {
 		resultsCount := len(ret.Results)
 		if resultsCount < query.Count {
@@ -53,25 +60,53 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		} else {
 			endIndex = 0
 		}
-		for endIndex <= resultsCount {
-			currentMatch := strings.Split(ret.Results[startIndex].IPAddress, ".")
-			lastMatch := strings.Split(ret.Results[endIndex].IPAddress, ".")
-			a, _ := strconv.Atoi(currentMatch[3])
-			b, _ := strconv.Atoi(lastMatch[3])
-			if a+query.Count > 255 {
-				b = b + 256
+		for endIndex <= resultsCount && matchFlag == false {
+			var currentMatch ipmath.IP
+			var lastMatch ipmath.IP
+
+			if startIndex > endIndex {
+				currentMatch = ipmath.IP{
+					Address: net.ParseIP(prevPage[startIndex].IPAddress),
+					Network: network,
+				}
+			} else {
+				currentMatch = ipmath.IP{
+					Address: net.ParseIP(ret.Results[startIndex].IPAddress),
+					Network: network,
+				}
 			}
-			if b-a == (query.Count - 1) {
-				matchFlag = true
-				for i := 0; i <= query.Count-1; i++ {
-					addresses = append(addresses, ret.Results[startIndex])
-					if len(prevPage) > 0 && startIndex == len(prevPage)-1 {
-						startIndex = 0
-					} else {
-						startIndex++
+			lastMatch = ipmath.IP{
+				Address: net.ParseIP(ret.Results[endIndex].IPAddress),
+				Network: network,
+			}
+
+			if currentMatch.Difference(lastMatch.Address) == (query.Count - 1) {
+				for rangeMatchFlag == false {
+					for _, addressRange := range rangePage.Results {
+						if ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, currentMatch.Address.String()) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, lastMatch.Address.String()) {
+							rangeMatchFlag = true
+							break
+						}
+					}
+					if rangeMatchFlag == false && rangePage.NextPageID != "" {
+						rangePage, err = c.GetPaginatedCidrRanges(query.CIDR, rangePage.NextPageID)
+					} else if rangeMatchFlag == false && ret.NextPageID == "" {
+						matchFlag = true
+						for i := 0; i <= query.Count-1; i++ {
+							if startIndex > endIndex {
+								addresses = append(addresses, prevPage[startIndex])
+							} else {
+								addresses = append(addresses, ret.Results[startIndex])
+							}
+							if len(prevPage) > 0 && startIndex == len(prevPage)-1 {
+								startIndex = 0
+							} else {
+								startIndex++
+							}
+						}
+						break
 					}
 				}
-				break
 			}
 			if len(prevPage) > 0 && startIndex == len(prevPage)-1 {
 				startIndex = 0

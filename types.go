@@ -192,6 +192,7 @@ type Range struct {
 	EndAddress           string               `json:"end_addr,omitempty"`
 	NetworkView          string               `json:"network_view,omitempty"`
 	CIDR                 string               `json:"network,omitempty"`
+	Member               *Member              `json:"member,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
 

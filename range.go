@@ -56,6 +56,35 @@ func (c *Client) GetRangeByQuery(queryParams map[string]string) (Range, error) {
 	return ret, nil
 }
 
+// GetPaginatedCidrRanges gets ranges within CIDR by page
+func (c *Client) GetPaginatedCidrRanges(cidr string, pageID string) (rangePage RangeQueryResult, err error) {
+	var ret RangeQueryResult
+
+	queryParams := map[string]string{
+		"network":           cidr,
+		"_return_as_object": "1",
+		"_paging":           "1",
+		"_max_results":      "100",
+		"_return_fields":    rangeReturnFields,
+	}
+	if pageID != "" {
+		queryParams["_page_id"] = pageID
+	}
+
+	queryParamString := c.BuildQuery(queryParams)
+	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", rangeBasePath, queryParamString), nil)
+	if err != nil {
+		return rangePage, err
+	}
+
+	err = c.Call(request, &ret)
+	if err != nil {
+		return rangePage, err
+	}
+
+	return ret, nil
+}
+
 // CreateRange creates range
 func (c *Client) CreateRange(rangeObject *Range) error {
 	queryParams := map[string]string{
