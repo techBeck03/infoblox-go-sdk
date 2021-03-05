@@ -21,6 +21,10 @@ var (
 		CIDR:  "172.16.106.0/24",
 		Count: 20,
 	}
+	ipv4AddressSequentialQuery2 = AddressQuery{
+		CIDR:  "172.19.4.0/24",
+		Count: 20,
+	}
 	ipv4AddressVerifyQuery = AddressQuery{
 		CIDR:         "172.19.4.0/24",
 		StartAddress: "172.19.4.10",
@@ -91,7 +95,12 @@ func TestGetUsedAddressesWithinRange(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error creating host record: %s", err)
 	}
-	addresses, err := ipv4AddressClient.GetUsedAddressesWithinRange(ipv4AddressVerifyQuery)
+	addresses, err := ipv4AddressClient.GetSequentialAddressRange(ipv4AddressSequentialQuery2)
+	if err != nil {
+		t.Errorf("Error retrieving host record: %s", err)
+	}
+	prettyPrint(addresses)
+	addresses, err = ipv4AddressClient.GetUsedAddressesWithinRange(ipv4AddressVerifyQuery)
 	if err != nil {
 		t.Errorf("Error retrieving host record: %s", err)
 	}

@@ -87,30 +87,39 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 			}
 
 			if currentMatch.Difference(lastMatch.Address) == (query.Count - 1) {
-				for rangeMatchFlag == false {
-					for _, addressRange := range rangePage.Results {
-						if ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, currentMatch.Address.String()) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, lastMatch.Address.String()) {
-							rangeMatchFlag = true
+				if len(rangePage.Results) > 0 {
+					for rangeMatchFlag == false {
+						for _, addressRange := range rangePage.Results {
+							if ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, currentMatch.Address.String()) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, lastMatch.Address.String()) {
+								rangeMatchFlag = true
+								break
+							}
+						}
+						if rangeMatchFlag == false && rangePage.NextPageID != "" {
+							rangePage, err = c.GetPaginatedCidrRanges(query.CIDR, rangePage.NextPageID)
+							if err != nil {
+								return &addresses, err
+							}
+						} else if rangeMatchFlag == false && rangePage.NextPageID == "" {
+							matchFlag = true
 							break
 						}
 					}
-					if rangeMatchFlag == false && rangePage.NextPageID != "" {
-						rangePage, err = c.GetPaginatedCidrRanges(query.CIDR, rangePage.NextPageID)
-					} else if rangeMatchFlag == false && ret.NextPageID == "" {
-						matchFlag = true
-						for i := 0; i <= query.Count-1; i++ {
-							if startIndex > endIndex {
-								addresses = append(addresses, prevPage[startIndex])
-							} else {
-								addresses = append(addresses, ret.Results[startIndex])
-							}
-							if len(prevPage) > 0 && startIndex == len(prevPage)-1 {
-								startIndex = 0
-							} else {
-								startIndex++
-							}
+				} else {
+					matchFlag = true
+				}
+				if matchFlag == true {
+					for i := 0; i <= query.Count-1; i++ {
+						if startIndex > endIndex {
+							addresses = append(addresses, prevPage[startIndex])
+						} else {
+							addresses = append(addresses, ret.Results[startIndex])
 						}
-						break
+						if len(prevPage) > 0 && startIndex == len(prevPage)-1 {
+							startIndex = 0
+						} else {
+							startIndex++
+						}
 					}
 				}
 			}
