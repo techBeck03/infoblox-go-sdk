@@ -140,6 +140,7 @@ func (c *Client) DeleteRange(ref string) error {
 
 // CreateSequentialRange creates sequential address range
 func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) error {
+	query.fillDefaults()
 	retryCount := 0
 	verified := false
 
@@ -148,6 +149,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		if err != nil {
 			return err
 		}
+		prettyPrint(sequentialAddresses)
 		rangeObject.StartAddress = (*sequentialAddresses)[0].IPAddress
 		rangeObject.EndAddress = (*sequentialAddresses)[len(*sequentialAddresses)-1].IPAddress
 
@@ -160,9 +162,10 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 
 		// Check for used addresses within range
 		usedAddresses, err := c.GetUsedAddressesWithinRange(AddressQuery{
-			CIDR:         query.CIDR,
-			StartAddress: rangeObject.StartAddress,
-			EndAddress:   rangeObject.EndAddress,
+			CIDR:                 query.CIDR,
+			StartAddress:         rangeObject.StartAddress,
+			EndAddress:           rangeObject.EndAddress,
+			FilterEmptyHostnames: newBool(true),
 		})
 		if err != nil {
 			return err
@@ -177,6 +180,10 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		} else {
 			verified = true
 		}
+	}
+
+	if verified == false {
+		return fmt.Errorf("Unable to create sequential range within %s", query.CIDR)
 	}
 
 	return nil

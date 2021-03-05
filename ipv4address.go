@@ -176,5 +176,14 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 	if err != nil {
 		return &addresses, err
 	}
+	if *query.FilterEmptyHostnames == true {
+		var filteredResults []IPv4Address
+		for _, result := range ret.Results {
+			if len(result.Hostnames) > 0 {
+				filteredResults = append(filteredResults, result)
+			}
+		}
+		return &filteredResults, nil
+	}
 	return &ret.Results, nil
 }
