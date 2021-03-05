@@ -171,6 +171,7 @@ type AddressQueryResult struct {
 // AddressQuery object
 type AddressQuery struct {
 	NetworkView  string
+	Retries      int
 	CIDR         string
 	Count        int
 	StartAddress string
@@ -180,6 +181,9 @@ type AddressQuery struct {
 func (aq *AddressQuery) fillDefaults() {
 	if aq.NetworkView == "" {
 		aq.NetworkView = "default"
+	}
+	if aq.Retries == 0 {
+		aq.Retries = 3
 	}
 }
 

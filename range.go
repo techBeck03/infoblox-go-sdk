@@ -2,7 +2,9 @@ package infoblox
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"time"
 )
 
 const (
@@ -103,7 +105,7 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 	return nil
 }
 
-// UpdateRange creates range
+// UpdateRange updates range
 func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 	var ret Range
 	queryParams := map[string]string{
@@ -122,7 +124,7 @@ func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 	return ret, nil
 }
 
-// DeleteRange creates range
+// DeleteRange deletes range
 func (c *Client) DeleteRange(ref string) error {
 	request, err := c.CreateJSONRequest(http.MethodDelete, fmt.Sprintf("%s", ref), nil)
 	if err != nil {
@@ -133,6 +135,50 @@ func (c *Client) DeleteRange(ref string) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// CreateSequentialRange creates sequential address range
+func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) error {
+	retryCount := 0
+	verified := false
+
+	for verified == false && retryCount <= query.Retries {
+		sequentialAddresses, err := c.GetSequentialAddressRange(query)
+		if err != nil {
+			return err
+		}
+		rangeObject.StartAddress = (*sequentialAddresses)[0].IPAddress
+		rangeObject.EndAddress = (*sequentialAddresses)[len(*sequentialAddresses)-1].IPAddress
+
+		err = c.CreateRange(rangeObject)
+		if err != nil {
+			return err
+		}
+
+		time.Sleep(1 * time.Second)
+
+		// Check for used addresses within range
+		usedAddresses, err := c.GetUsedAddressesWithinRange(AddressQuery{
+			CIDR:         query.CIDR,
+			StartAddress: rangeObject.StartAddress,
+			EndAddress:   rangeObject.EndAddress,
+		})
+		if err != nil {
+			return err
+		}
+		if len((*usedAddresses)) > 0 {
+			log.Println("Found allocated addresses within newly created range.  Deleting and Recreating.....")
+			retryCount++
+			err := c.DeleteRange(rangeObject.Ref)
+			if err != nil {
+				return err
+			}
+		} else {
+			verified = true
+		}
+	}
+
 	return nil
 }
 
