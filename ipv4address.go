@@ -158,9 +158,8 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 
 	query.fillDefaults()
 	queryParams := map[string]string{
-		"network":      query.CIDR,
-		"network_view": query.NetworkView,
-		// "status":            "USED",
+		"network":           query.CIDR,
+		"network_view":      query.NetworkView,
 		"_return_as_object": "1",
 		"ip_address>":       query.StartAddress,
 		"ip_address<":       query.EndAddress,
