@@ -57,7 +57,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 	}
 	for matchFlag == false {
 		resultsCount := len(ret.Results)
-		if resultsCount < query.Count {
+		if ret.NextPageID == "" && ((len(prevPage) == 0 && resultsCount < query.Count) || (len(prevPage) > 0 && ((len(prevPage)-startIndex)+resultsCount) < query.Count)) {
 			return &addresses, fmt.Errorf("No sequential block found for supplied count")
 		}
 		if startIndex == -1 {
@@ -158,13 +158,13 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 
 	query.fillDefaults()
 	queryParams := map[string]string{
-		"network":           query.CIDR,
-		"network_view":      query.NetworkView,
-		"status":            "USED",
+		"network":      query.CIDR,
+		"network_view": query.NetworkView,
+		// "status":            "USED",
 		"_return_as_object": "1",
 		"ip_address>":       query.StartAddress,
 		"ip_address<":       query.EndAddress,
-		"_return_fields":    "ip_address,network,network_view,status",
+		"_return_fields":    "ip_address,network,network_view,status,names,objects",
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", ipv4AddressBasePath, queryParamString), nil)
@@ -176,14 +176,19 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 	if err != nil {
 		return &addresses, err
 	}
+	var filteredResults []IPv4Address
 	if *query.FilterEmptyHostnames == true {
-		var filteredResults []IPv4Address
 		for _, result := range ret.Results {
-			if len(result.Hostnames) > 0 {
+			if (len(result.Hostnames) > 0 || len(result.Objects) > 0) && result.Status == "USED" {
 				filteredResults = append(filteredResults, result)
 			}
 		}
-		return &filteredResults, nil
+	} else {
+		for _, result := range ret.Results {
+			if result.Status == "USED" {
+				filteredResults = append(filteredResults, result)
+			}
+		}
 	}
-	return &ret.Results, nil
+	return &filteredResults, nil
 }
