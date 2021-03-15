@@ -39,8 +39,8 @@ func (c *Client) GetRangeByRef(ref string, queryParams map[string]string) (Range
 }
 
 // GetRangeByQuery gets range by reference
-func (c *Client) GetRangeByQuery(queryParams map[string]string) (Range, error) {
-	var ret Range
+func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error) {
+	var ret []Range
 
 	queryParams["_return_fields"] = rangeReturnFields
 

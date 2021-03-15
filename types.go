@@ -145,6 +145,7 @@ type FixedAddress struct {
 	Mac                  string               `json:"mac,omitempty"`
 	Hostname             string               `json:"name,omitempty"`
 	MatchClient          string               `json:"match_client,omitempty"`
+	Options              []Option             `json:"options,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
 
@@ -201,6 +202,7 @@ type Range struct {
 	NetworkView          string               `json:"network_view,omitempty"`
 	CIDR                 string               `json:"network,omitempty"`
 	Member               *Member              `json:"member,omitempty"`
+	Options              []Option             `json:"options,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
 
@@ -216,4 +218,30 @@ type IPsWithinRangeQuery struct {
 	CIDR         string
 	StartAddress string
 	EndAddress   string
+}
+
+// ARecord object
+type ARecord struct {
+	Ref                  string               `json:"_ref,omitempty"`
+	Hostname             string               `json:"name,omitempty"`
+	DNSName              string               `json:"dns_name,omitempty"`
+	IPAddress            string               `json:"ipv4addr,omitempty"`
+	Zone                 string               `json:"zone,omitempty"`
+	Comment              string               `json:"comment,omitempty"`
+	Disable              *bool                `json:"disable,omitempty"`
+	View                 string               `json:"view,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+}
+
+// CName object
+type CNameRecord struct {
+	Ref                  string               `json:"_ref,omitempty"`
+	Alias                string               `json:"name,omitempty"`
+	Canonical            string               `json:"canonical,omitempty"`
+	DNSName              string               `json:"dns_name,omitempty"`
+	Zone                 string               `json:"zone,omitempty"`
+	Comment              string               `json:"comment,omitempty"`
+	Disable              *bool                `json:"disable,omitempty"`
+	View                 string               `json:"view,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
