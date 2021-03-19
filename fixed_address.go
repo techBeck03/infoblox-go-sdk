@@ -7,7 +7,7 @@ import (
 
 const (
 	fixedAddressBasePath     = "fixedaddress"
-	fixedAddressReturnFields = "extattrs,ipv4addr,network_view,comment,name"
+	fixedAddressReturnFields = "extattrs,ipv4addr,network_view,disable,comment,name"
 )
 
 // GetFixedAddressByRef gets fixed address by reference

@@ -7,7 +7,7 @@ import (
 
 const (
 	aRecordBasePath     = "record:a"
-	aRecordReturnFields = "ipv4addr,name,view,dns_name,comment,zone,extattrs"
+	aRecordReturnFields = "ipv4addr,name,view,dns_name,disable,comment,zone,extattrs"
 )
 
 // GetARecordByRef gets A record by reference

@@ -245,3 +245,34 @@ type CNameRecord struct {
 	View                 string               `json:"view,omitempty"`
 	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
 }
+
+// AliasRecord object
+type AliasRecord struct {
+	Ref                  string               `json:"_ref,omitempty"`
+	Name                 string               `json:"name,omitempty"`
+	Target               string               `json:"target_name,omitempty"`
+	TargetType           string               `json:"target_type,omitempty"`
+	DNSName              string               `json:"dns_name,omitempty"`
+	DNSTargetName        string               `json:"dns_target_name,omitempty"`
+	Zone                 string               `json:"zone,omitempty"`
+	Comment              string               `json:"comment,omitempty"`
+	Disable              *bool                `json:"disable,omitempty"`
+	View                 string               `json:"view,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+}
+
+// PtrRecord object
+type PtrRecord struct {
+	Ref                  string               `json:"_ref,omitempty"`
+	Name                 string               `json:"name,omitempty"`
+	PointerDomainName    string               `json:"ptrdname,omitempty"`
+	IPv4Address          string               `json:"ipv4addr,omitempty"`
+	IPv6Address          string               `json:"ipv6addr,omitempty"`
+	DNSName              string               `json:"dns_name,omitempty"`
+	DNSPointerDomainName string               `json:"dns_ptrdname,omitempty"`
+	Zone                 string               `json:"zone,omitempty"`
+	Comment              string               `json:"comment,omitempty"`
+	Disable              *bool                `json:"disable,omitempty"`
+	View                 string               `json:"view,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+}

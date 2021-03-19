@@ -7,7 +7,7 @@ import (
 
 const (
 	cNameRecordBasePath     = "record:cname"
-	cNameRecordReturnFields = "name,canonical,view,dns_name,comment,zone,extattrs"
+	cNameRecordReturnFields = "name,canonical,view,dns_name,disable,comment,zone,extattrs"
 )
 
 // GetCNameRecordByRef gets cname record by reference
