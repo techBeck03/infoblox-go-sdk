@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	aliasRecordBasePath     = "record:a"
+	aliasRecordBasePath     = "record:alias"
 	aliasRecordReturnFields = "name,target_name,target_type,dns_name,dns_target_name,disable,view,dns_name,comment,zone,extattrs"
 )
 

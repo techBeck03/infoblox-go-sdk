@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ptrRecordBasePath     = "record:a"
+	ptrRecordBasePath     = "record:ptr"
 	ptrRecordReturnFields = "name,ptrdname,ipv4addr,ipv6addr,dns_name,dns_ptrdname,disable,view,dns_name,comment,zone,extattrs"
 )
 
