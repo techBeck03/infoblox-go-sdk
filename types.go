@@ -59,7 +59,7 @@ type Network struct {
 	Ref                  string               `json:"_ref,omitempty"`
 	NetworkView          string               `json:"network_view,omitempty"`
 	CIDR                 string               `json:"network,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 	Comment              string               `json:"comment,omitempty"`
 	DisableDHCP          *bool                `json:"disable,omitempty"`
 	Members              []Member             `json:"members,omitempty"`
@@ -110,7 +110,7 @@ type HostRecord struct {
 	Hostname             string               `json:"name,omitempty"`
 	Comment              string               `json:"comment,omitempty"`
 	EnableDNS            *bool                `json:"configure_for_dns,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 	IPv4Addrs            []IPv4Addr           `json:"ipv4addrs,omitempty"`
 	NetworkView          string               `json:"network_view,omitempty"`
 	RestartIfNeeded      *bool                `json:"restart_if_needed,omitempty"`
@@ -146,7 +146,7 @@ type FixedAddress struct {
 	Hostname             string               `json:"name,omitempty"`
 	MatchClient          string               `json:"match_client,omitempty"`
 	Options              []Option             `json:"options,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
 
 // IPv4Address object
@@ -203,7 +203,7 @@ type Range struct {
 	CIDR                 string               `json:"network,omitempty"`
 	Member               *Member              `json:"member,omitempty"`
 	Options              []Option             `json:"options,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
 
 // RangeQueryResult object
@@ -230,7 +230,7 @@ type ARecord struct {
 	Comment              string               `json:"comment,omitempty"`
 	Disable              *bool                `json:"disable,omitempty"`
 	View                 string               `json:"view,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
 
 // CName object
@@ -243,7 +243,7 @@ type CNameRecord struct {
 	Comment              string               `json:"comment,omitempty"`
 	Disable              *bool                `json:"disable,omitempty"`
 	View                 string               `json:"view,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
 
 // AliasRecord object
@@ -258,7 +258,7 @@ type AliasRecord struct {
 	Comment              string               `json:"comment,omitempty"`
 	Disable              *bool                `json:"disable,omitempty"`
 	View                 string               `json:"view,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
 
 // PtrRecord object
@@ -274,5 +274,5 @@ type PtrRecord struct {
 	Comment              string               `json:"comment,omitempty"`
 	Disable              *bool                `json:"disable,omitempty"`
 	View                 string               `json:"view,omitempty"`
-	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributes *ExtensibleAttribute `json:"extattrs"`
 }
