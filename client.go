@@ -10,7 +10,7 @@ import (
 	"net/url"
 )
 
-// Config - Configuration details for connecting to guacamole
+// Config - Configuration details for connecting to infoblox
 type Config struct {
 	Host                   string
 	Port                   string
@@ -20,7 +20,7 @@ type Config struct {
 	DisableTLSVerification bool
 }
 
-// Client - base client for guacamole interactions
+// Client - base client for infoblox interactions
 type Client struct {
 	client          *http.Client
 	config          Config
@@ -30,7 +30,7 @@ type Client struct {
 	OrchestratorEAs *ExtensibleAttribute
 }
 
-// New - creates a new guacamole client
+// New - creates a new infoblox client
 func New(config Config) Client {
 	var client *http.Client
 	if config.DisableTLSVerification {
