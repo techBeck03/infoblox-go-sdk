@@ -9,7 +9,7 @@ import (
 
 const (
 	rangeBasePath     = "range"
-	rangeReturnFields = "network,network_view,start_addr,end_addr,disable,comment,extattrs"
+	rangeReturnFields = "network,network_view,start_addr,end_addr,disable,comment,extattrs,member"
 )
 
 // GetRangeByRef gets range by reference
