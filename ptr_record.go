@@ -38,21 +38,24 @@ func (c *Client) GetPtrRecordByRef(ref string, queryParams map[string]string) (P
 
 // GetPtrRecordByQuery gets ptr records by query parameters
 func (c *Client) GetPtrRecordByQuery(queryParams map[string]string) ([]PtrRecord, error) {
-	var ret []PtrRecord
+	var ret PtrRecordQueryResult
 	queryParams["_return_fields"] = ptrRecordReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", ptrRecordBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreatePtrRecord creates ptr record

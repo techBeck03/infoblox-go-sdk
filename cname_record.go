@@ -38,21 +38,24 @@ func (c *Client) GetCNameRecordByRef(ref string, queryParams map[string]string) 
 
 // GetCNameRecordByQuery gets cname records by query parameters
 func (c *Client) GetCNameRecordByQuery(queryParams map[string]string) ([]CNameRecord, error) {
-	var ret []CNameRecord
+	var ret CNameRecordQueryResult
 	queryParams["_return_fields"] = cNameRecordReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", cNameRecordBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreateCNameRecord creates cname record

@@ -38,21 +38,24 @@ func (c *Client) GetNetworkByRef(ref string, queryParams map[string]string) (Net
 
 // GetNetworkByQuery gets network by query parameters
 func (c *Client) GetNetworkByQuery(queryParams map[string]string) ([]Network, error) {
-	var ret []Network
+	var ret NetworkQueryResult
 	queryParams["_return_fields"] = networkReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", networkBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreateNetwork creates network

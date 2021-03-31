@@ -38,22 +38,25 @@ func (c *Client) GetFixedAddressByRef(ref string, queryParams map[string]string)
 
 // GetFixedAddressByQuery gets fixed address by query parameters
 func (c *Client) GetFixedAddressByQuery(queryParams map[string]string) ([]FixedAddress, error) {
-	var ret []FixedAddress
+	var ret FixedAddressQueryResult
 
 	queryParams["_return_fields"] = fixedAddressReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", fixedAddressBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreateFixedAddress creates fixed address

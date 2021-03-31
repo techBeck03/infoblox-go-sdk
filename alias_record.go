@@ -38,21 +38,24 @@ func (c *Client) GetAliasRecordByRef(ref string, queryParams map[string]string) 
 
 // GetAliasRecordByQuery gets alias records by query parameters
 func (c *Client) GetAliasRecordByQuery(queryParams map[string]string) ([]AliasRecord, error) {
-	var ret []AliasRecord
+	var ret AliasRecordQueryResult
 	queryParams["_return_fields"] = aliasRecordReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", aliasRecordBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreateAliasRecord creates alias record

@@ -3,6 +3,7 @@ package infoblox
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -52,13 +53,17 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 		if target.Ref == "" {
 			return ret, fmt.Errorf("No ea definition found for ea: %s", name)
 		}
+		log.Printf("[HELLO]-------\n%+v", ea.DescendantsAction)
 		stringVal, _ := json.Marshal(ExtensibleAttributeJSONMapValue{
-			Type:              target.Type,
-			Value:             ea.Value,
-			InheritanceSource: ea.InheritanceSource,
+			Type:                 target.Type,
+			Value:                ea.Value,
+			InheritanceSource:    ea.InheritanceSource,
+			InheritanceOperation: ea.InheritanceOperation,
+			DescendantsAction:    ea.DescendantsAction,
 		})
 		ret[name] = string(stringVal)
 	}
+	log.Printf("[HELLO]-------\n%+v", ret)
 	return ret, nil
 }
 

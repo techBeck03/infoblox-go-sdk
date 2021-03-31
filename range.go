@@ -40,22 +40,25 @@ func (c *Client) GetRangeByRef(ref string, queryParams map[string]string) (Range
 
 // GetRangeByQuery gets range by reference
 func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error) {
-	var ret []Range
+	var ret RangeQueryResult
 
 	queryParams["_return_fields"] = rangeReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", rangeBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // GetPaginatedCidrRanges gets ranges within CIDR by page

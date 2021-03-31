@@ -7,7 +7,7 @@ import (
 
 const (
 	hostRecordBasePath     = "record:host"
-	hostRecordReturnFields = "name,view,network_view,configure_for_dns,comment,zone,ipv4addrs,ipv4addrs.host,ipv4addrs.network,ipv4addrs.ipv4addr,ipv4addrs.mac,ipv4addrs.configure_for_dhcp,ipv4addrs.nextserver,extattrs"
+	hostRecordReturnFields = "name,view,network_view,configure_for_dns,comment,zone,ipv4addrs,ipv4addrs.host,ipv4addrs.network,ipv4addrs.ipv4addr,ipv4addrs.mac,ipv4addrs.configure_for_dhcp,ipv4addrs.nextserver,ipv4addrs.use_for_ea_inheritance,extattrs"
 )
 
 // GetHostRecordByRef gets host record by reference
@@ -38,21 +38,24 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 
 // GetHostRecordByQuery gets host record by query parameters
 func (c *Client) GetHostRecordByQuery(queryParams map[string]string) ([]HostRecord, error) {
-	var ret []HostRecord
+	var ret HostRecordQueryResult
 	queryParams["_return_fields"] = hostRecordReturnFields
+	queryParams["_return_as_object"] = "1"
+	queryParams["_paging"] = "0"
+	queryParams["_max_results"] = "2"
 
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodGet, fmt.Sprintf("%s?%s", hostRecordBasePath, queryParamString), nil)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
 	err = c.Call(request, &ret)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	return ret, nil
+	return ret.Results, nil
 }
 
 // CreateHostRecord creates host record
