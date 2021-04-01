@@ -346,3 +346,11 @@ type PtrRecordQueryResult struct {
 	NextPageID string      `json:"next_page_id,omitempty"`
 	Results    []PtrRecord `json:"result,omitempty"`
 }
+
+// ResponseError object
+type ResponseError struct {
+	StatusCode   int
+	Request      string
+	ResponseBody string
+	ErrorMessage string
+}

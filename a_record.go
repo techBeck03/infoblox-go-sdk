@@ -28,9 +28,9 @@ func (c *Client) GetARecordByRef(ref string, queryParams map[string]string) (ARe
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -50,28 +50,28 @@ func (c *Client) GetARecordByQuery(queryParams map[string]string) ([]ARecord, er
 		return nil, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return nil, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret.Results, nil
 }
 
 // CreateARecord creates A record
-func (c *Client) CreateARecord(network *ARecord) error {
+func (c *Client) CreateARecord(record *ARecord) error {
 	queryParams := map[string]string{
 		"_return_fields": aRecordReturnFields,
 	}
 	queryParamString := c.BuildQuery(queryParams)
-	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", aRecordBasePath, queryParamString), network)
+	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", aRecordBasePath, queryParamString), record)
 	if err != nil {
 		return err
 	}
 
-	err = c.Call(request, &network)
-	if err != nil {
-		return err
+	response := c.Call(request, &record)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 	return nil
 }
@@ -88,9 +88,9 @@ func (c *Client) UpdateARecord(ref string, network ARecord) (ARecord, error) {
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 	return ret, nil
 }
@@ -102,8 +102,11 @@ func (c *Client) DeleteARecord(ref string) error {
 		return err
 	}
 
-	err = c.Call(request, nil)
-	if err != nil {
+	response := c.Call(request, nil)
+	if response != nil {
+		if response.StatusCode == 404 {
+			return nil
+		}
 		return err
 	}
 	return nil

@@ -26,9 +26,9 @@ func (c *Client) GetGridByRef(ref string) (Grid, error) {
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -51,9 +51,9 @@ func (c *Client) GetGridsByQuery(queryParams map[string]string) ([]Grid, error) 
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -72,9 +72,9 @@ func (c *Client) GetGridMembersByRef(ref string) (GridMember, error) {
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -98,9 +98,9 @@ func (c *Client) GetGridMembersByQuery(queryParams map[string]string) ([]GridMem
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -118,9 +118,9 @@ func (c *Client) RestartServices(ref string, restartRequest GridServiceRestartRe
 		return err
 	}
 
-	err = c.Call(request, nil)
-	if err != nil {
-		return err
+	response := c.Call(request, nil)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 
 	return nil

@@ -3,7 +3,6 @@ package infoblox
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -27,9 +26,9 @@ func (c *Client) GetEADefinitions(force bool) error {
 		return err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 
 	c.eaDefinitions = ret
@@ -53,7 +52,6 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 		if target.Ref == "" {
 			return ret, fmt.Errorf("No ea definition found for ea: %s", name)
 		}
-		log.Printf("[HELLO]-------\n%+v", ea.DescendantsAction)
 		stringVal, _ := json.Marshal(ExtensibleAttributeJSONMapValue{
 			Type:                 target.Type,
 			Value:                ea.Value,
@@ -63,7 +61,6 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 		})
 		ret[name] = string(stringVal)
 	}
-	log.Printf("[HELLO]-------\n%+v", ret)
 	return ret, nil
 }
 

@@ -30,9 +30,9 @@ func (c *Client) GetRangeByRef(ref string, queryParams map[string]string) (Range
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -53,9 +53,9 @@ func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error)
 		return nil, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return nil, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret.Results, nil
@@ -82,9 +82,9 @@ func (c *Client) GetPaginatedCidrRanges(cidr string, pageID string) (rangePage R
 		return rangePage, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return rangePage, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return rangePage, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -101,9 +101,9 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 		return err
 	}
 
-	err = c.Call(request, &rangeObject)
-	if err != nil {
-		return err
+	response := c.Call(request, &rangeObject)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 	return nil
 }
@@ -120,9 +120,9 @@ func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 	return ret, nil
 }
@@ -134,8 +134,11 @@ func (c *Client) DeleteRange(ref string) error {
 		return err
 	}
 
-	err = c.Call(request, nil)
-	if err != nil {
+	response := c.Call(request, nil)
+	if response != nil {
+		if response.StatusCode == 404 {
+			return nil
+		}
 		return err
 	}
 	return nil
@@ -211,9 +214,9 @@ func (c *Client) CheckIfRangeContainsRange(query IPsWithinRangeQuery) (bool, err
 		return true, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return true, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return true, fmt.Errorf(response.ErrorMessage)
 	}
 
 	if len(ret.Results) == 0 {
@@ -238,9 +241,9 @@ func (c *Client) CheckIfRangeContainsRange(query IPsWithinRangeQuery) (bool, err
 				return true, err
 			}
 
-			err = c.Call(request, &ret)
-			if err != nil {
-				return true, err
+			response := c.Call(request, &ret)
+			if response != nil {
+				return true, fmt.Errorf(response.ErrorMessage)
 			}
 		} else if matchFlag == false && ret.NextPageID == "" {
 			return false, nil

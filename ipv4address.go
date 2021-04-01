@@ -45,9 +45,9 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		return &addresses, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return &addresses, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return &addresses, fmt.Errorf(response.ErrorMessage)
 	}
 
 	_, network, _ := net.ParseCIDR(query.CIDR)
@@ -140,9 +140,9 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 				return &addresses, err
 			}
 
-			err = c.Call(request, &ret)
-			if err != nil {
-				return &addresses, err
+			response := c.Call(request, &ret)
+			if response != nil {
+				return &addresses, fmt.Errorf(response.ErrorMessage)
 			}
 		} else if matchFlag == false && ret.NextPageID == "" {
 			return &addresses, fmt.Errorf("No sequential block found for supplied count")
@@ -171,9 +171,9 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 		return &addresses, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return &addresses, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return &addresses, fmt.Errorf(response.ErrorMessage)
 	}
 	var filteredResults []IPv4Address
 	if *query.FilterEmptyHostnames == true {

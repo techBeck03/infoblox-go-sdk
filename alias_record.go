@@ -28,9 +28,9 @@ func (c *Client) GetAliasRecordByRef(ref string, queryParams map[string]string) 
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -50,28 +50,28 @@ func (c *Client) GetAliasRecordByQuery(queryParams map[string]string) ([]AliasRe
 		return nil, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return nil, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret.Results, nil
 }
 
 // CreateAliasRecord creates alias record
-func (c *Client) CreateAliasRecord(network *AliasRecord) error {
+func (c *Client) CreateAliasRecord(record *AliasRecord) error {
 	queryParams := map[string]string{
 		"_return_fields": aliasRecordReturnFields,
 	}
 	queryParamString := c.BuildQuery(queryParams)
-	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", aliasRecordBasePath, queryParamString), network)
+	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", aliasRecordBasePath, queryParamString), record)
 	if err != nil {
 		return err
 	}
 
-	err = c.Call(request, &network)
-	if err != nil {
-		return err
+	response := c.Call(request, &record)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 	return nil
 }
@@ -88,9 +88,9 @@ func (c *Client) UpdateAliasRecord(ref string, network AliasRecord) (AliasRecord
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 	return ret, nil
 }
@@ -102,8 +102,11 @@ func (c *Client) DeleteAliasRecord(ref string) error {
 		return err
 	}
 
-	err = c.Call(request, nil)
-	if err != nil {
+	response := c.Call(request, nil)
+	if response != nil {
+		if response.StatusCode == 404 {
+			return nil
+		}
 		return err
 	}
 	return nil

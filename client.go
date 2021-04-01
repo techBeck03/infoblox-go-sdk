@@ -78,7 +78,7 @@ func (c *Client) CreateJSONRequest(method string, path string, params interface{
 }
 
 // Call - function for handling http requests
-func (c *Client) Call(request *http.Request, result interface{}) error {
+func (c *Client) Call(request *http.Request, result interface{}) *ResponseError {
 	request.SetBasicAuth(c.config.Username, c.config.Password)
 
 	// Use cookies for auth if set
@@ -89,7 +89,12 @@ func (c *Client) Call(request *http.Request, result interface{}) error {
 	}
 	response, err := c.client.Do(request)
 	if err != nil {
-		return err
+		return &ResponseError{
+			StatusCode:   0,
+			Request:      fmt.Sprintf("%+v", request),
+			ResponseBody: "",
+			ErrorMessage: fmt.Sprint(err),
+		}
 	}
 	defer response.Body.Close()
 	if !(response.StatusCode >= 200 && response.StatusCode <= 299) {
@@ -99,9 +104,13 @@ func (c *Client) Call(request *http.Request, result interface{}) error {
 		body := io.TeeReader(response.Body, &rawBodyBuffer)
 		var responseBody interface{}
 		json.NewDecoder(body).Decode(&responseBody)
-		return fmt.Errorf("Request %+v\n failed with status code %d\n response %+v\n%+v", request,
-			response.StatusCode, responseBody,
-			response)
+		return &ResponseError{
+			StatusCode:   response.StatusCode,
+			Request:      fmt.Sprintf("%+v", request),
+			ResponseBody: fmt.Sprintf("%+v", responseBody),
+			ErrorMessage: fmt.Sprintf("Request %+v\n failed with status code %d\n response %+v\n%+v", request,
+				response.StatusCode, responseBody),
+		}
 	}
 
 	// Add cookies if none exist
@@ -115,7 +124,12 @@ func (c *Client) Call(request *http.Request, result interface{}) error {
 	}
 	err = json.NewDecoder(response.Body).Decode(&result)
 	if err != nil {
-		return err
+		return &ResponseError{
+			StatusCode:   0,
+			Request:      fmt.Sprintf("%+v", request),
+			ResponseBody: "",
+			ErrorMessage: fmt.Sprint(err),
+		}
 	}
 	return nil
 }
@@ -126,9 +140,9 @@ func (c *Client) Logout() error {
 	if err != nil {
 		return err
 	}
-	err = c.Call(request, nil)
-	if err != nil {
-		return err
+	response := c.Call(request, nil)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 	return nil
 }

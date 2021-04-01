@@ -28,9 +28,9 @@ func (c *Client) GetHostRecordByRef(ref string, queryParams map[string]string) (
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
 	return ret, nil
@@ -50,12 +50,12 @@ func (c *Client) GetHostRecordByQuery(queryParams map[string]string) ([]HostReco
 		return nil, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return nil, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
-	return ret.Results, nil
+	return ret.Results, fmt.Errorf(response.ErrorMessage)
 }
 
 // CreateHostRecord creates host record
@@ -69,9 +69,9 @@ func (c *Client) CreateHostRecord(hostRecord *HostRecord) error {
 		return err
 	}
 
-	err = c.Call(request, &hostRecord)
-	if err != nil {
-		return err
+	response := c.Call(request, &hostRecord)
+	if response != nil {
+		return fmt.Errorf(response.ErrorMessage)
 	}
 	return nil
 }
@@ -88,9 +88,9 @@ func (c *Client) UpdateHostRecord(ref string, hostRecord HostRecord) (HostRecord
 		return ret, err
 	}
 
-	err = c.Call(request, &ret)
-	if err != nil {
-		return ret, err
+	response := c.Call(request, &ret)
+	if response != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 	return ret, nil
 }
@@ -102,8 +102,11 @@ func (c *Client) DeleteHostRecord(ref string) error {
 		return err
 	}
 
-	err = c.Call(request, nil)
-	if err != nil {
+	response := c.Call(request, nil)
+	if response != nil {
+		if response.StatusCode == 404 {
+			return nil
+		}
 		return err
 	}
 	return nil
