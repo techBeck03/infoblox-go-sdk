@@ -55,7 +55,7 @@ func (c *Client) GetHostRecordByQuery(queryParams map[string]string) ([]HostReco
 		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
-	return ret.Results, fmt.Errorf(response.ErrorMessage)
+	return ret.Results, nil
 }
 
 // CreateHostRecord creates host record

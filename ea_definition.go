@@ -63,23 +63,3 @@ func (c *Client) ConvertEAsToJSONString(eas ExtensibleAttribute) (map[string]str
 	}
 	return ret, nil
 }
-
-// ConvertEAsToJSONString converts extensible attributes to json format
-// func (c *Client) ConvertJSONStringToEAs(eaString string) (*ExtensibleAttribute, error) {
-// 	var ret ExtensibleAttribute
-// 	var eaMap ExtensibleAttributeJSONMap
-// 	json.Unmarshal([]byte(eaString), eaMap)
-// 	for name, ea := range eaMap {
-// 		switch ea.Type {
-// 		case "STRING":
-// 			ret[name] = ExtensibleAttributeValue{
-// 				Value: ea.Value.(string),
-// 			}
-// 		}
-// 	}
-// 	preparedEAs, err := json.Marshal(ret)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	return string(preparedEAs), nil
-// }
