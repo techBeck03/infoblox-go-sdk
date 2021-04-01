@@ -1,3 +1,4 @@
 # infoblox-go-sdk
 
-A limited use case go sdk to use with my infoblox terraform provider (under development)
+Infoblox go sdk for community Terraform provider found at https://registry.terraform.io/providers/techBeck03/infoblox/latest
+
