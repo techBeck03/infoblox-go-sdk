@@ -160,31 +160,31 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 
 		err = c.CreateRange(rangeObject)
 		if err != nil {
-			return err
-		}
+			verified = false
+		} else {
+			log.Println("Pausing for race condition checks")
+			time.Sleep(1 * time.Second)
 
-		log.Println("Pausing for race condition checks")
-		time.Sleep(1 * time.Second)
-
-		// Check for used addresses within range
-		usedAddresses, err := c.GetUsedAddressesWithinRange(AddressQuery{
-			CIDR:                 query.CIDR,
-			StartAddress:         rangeObject.StartAddress,
-			EndAddress:           rangeObject.EndAddress,
-			FilterEmptyHostnames: newBool(true),
-		})
-		if err != nil {
-			return err
-		}
-		if len((*usedAddresses)) > 0 {
-			log.Println("Found allocated addresses within newly created range.  Deleting and Recreating.....")
-			retryCount++
-			err := c.DeleteRange(rangeObject.Ref)
+			// Check for used addresses within range
+			usedAddresses, err := c.GetUsedAddressesWithinRange(AddressQuery{
+				CIDR:                 query.CIDR,
+				StartAddress:         rangeObject.StartAddress,
+				EndAddress:           rangeObject.EndAddress,
+				FilterEmptyHostnames: newBool(true),
+			})
 			if err != nil {
 				return err
 			}
-		} else {
-			verified = true
+			if len((*usedAddresses)) > 0 {
+				log.Println("Found allocated addresses within newly created range.  Deleting and Recreating.....")
+				retryCount++
+				err := c.DeleteRange(rangeObject.Ref)
+				if err != nil {
+					return err
+				}
+			} else {
+				verified = true
+			}
 		}
 	}
 
