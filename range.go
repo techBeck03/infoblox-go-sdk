@@ -3,8 +3,11 @@ package infoblox
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"time"
+
+	"github.com/techBeck03/go-ipmath"
 )
 
 const (
@@ -105,6 +108,16 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 	if response != nil {
 		return fmt.Errorf(response.ErrorMessage)
 	}
+	ipAddressList := []string{}
+	startingIP := ipmath.IP{
+		Address: net.ParseIP(rangeObject.StartAddress),
+	}
+	count := startingIP.Difference(net.ParseIP(rangeObject.EndAddress))
+	for i := 0; i <= count; i++ {
+		ipAddressList = append(ipAddressList, startingIP.ToIPString())
+		startingIP.Inc()
+	}
+	rangeObject.IPAddressList = ipAddressList
 	return nil
 }
 
@@ -193,7 +206,15 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 	if !verified {
 		return fmt.Errorf("unable to create sequential range within %s", query.CIDR)
 	}
-
+	ipAddressList := []string{}
+	startingIP := ipmath.IP{
+		Address: net.ParseIP(rangeObject.StartAddress),
+	}
+	for i := 1; i <= query.Count; i++ {
+		ipAddressList = append(ipAddressList, startingIP.ToIPString())
+		startingIP.Inc()
+	}
+	rangeObject.IPAddressList = ipAddressList
 	return nil
 }
 

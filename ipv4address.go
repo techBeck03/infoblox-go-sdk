@@ -55,10 +55,10 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 	if err != nil {
 		return &addresses, err
 	}
-	for matchFlag == false {
+	for !matchFlag {
 		resultsCount := len(ret.Results)
 		if ret.NextPageID == "" && ((len(prevPage) == 0 && resultsCount < query.Count) || (len(prevPage) > 0 && ((len(prevPage)-startIndex)+resultsCount) < query.Count)) {
-			return &addresses, fmt.Errorf("No sequential block found for supplied count")
+			return &addresses, fmt.Errorf("no sequential block found for supplied count")
 		}
 		if startIndex == -1 {
 			startIndex = 0
@@ -66,7 +66,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		} else {
 			endIndex = 0
 		}
-		for endIndex <= resultsCount && matchFlag == false {
+		for endIndex <= resultsCount && !matchFlag {
 			var currentMatch ipmath.IP
 			var lastMatch ipmath.IP
 
@@ -88,19 +88,19 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 
 			if currentMatch.Difference(lastMatch.Address) == (query.Count - 1) {
 				if len(rangePage.Results) > 0 {
-					for rangeMatchFlag == false {
+					for !rangeMatchFlag {
 						for _, addressRange := range rangePage.Results {
 							if ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, currentMatch.Address.String()) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, lastMatch.Address.String()) {
 								rangeMatchFlag = true
 								break
 							}
 						}
-						if rangeMatchFlag == false && rangePage.NextPageID != "" {
+						if !rangeMatchFlag && rangePage.NextPageID != "" {
 							rangePage, err = c.GetPaginatedCidrRanges(query.CIDR, rangePage.NextPageID)
 							if err != nil {
 								return &addresses, err
 							}
-						} else if rangeMatchFlag == false && rangePage.NextPageID == "" {
+						} else if !rangeMatchFlag && rangePage.NextPageID == "" {
 							matchFlag = true
 							break
 						}
@@ -108,7 +108,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 				} else {
 					matchFlag = true
 				}
-				if matchFlag == true {
+				if matchFlag {
 					for i := 0; i <= query.Count-1; i++ {
 						if startIndex > endIndex {
 							addresses = append(addresses, prevPage[startIndex])
@@ -176,7 +176,7 @@ func (c *Client) GetUsedAddressesWithinRange(query AddressQuery) (*[]IPv4Address
 		return &addresses, fmt.Errorf(response.ErrorMessage)
 	}
 	var filteredResults []IPv4Address
-	if *query.FilterEmptyHostnames == true {
+	if *query.FilterEmptyHostnames {
 		for _, result := range ret.Results {
 			if (len(result.Hostnames) > 0 || len(result.Objects) > 0) && result.Status == "USED" {
 				filteredResults = append(filteredResults, result)

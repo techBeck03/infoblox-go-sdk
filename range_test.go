@@ -95,21 +95,21 @@ func createRange(t *testing.T) {
 }
 
 func createSequentialRange1(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery1)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)
 	}
 }
 func createSequentialRange2(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery2)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)
 	}
 }
 func createSequentialRange3(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery3)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)

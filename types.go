@@ -242,6 +242,7 @@ type Range struct {
 	ExtensibleAttributes       *ExtensibleAttribute `json:"extattrs,omitempty"`
 	ExtensibleAttributesAdd    *ExtensibleAttribute `json:"extattrs+,omitempty"`
 	ExtensibleAttributesRemove *ExtensibleAttribute `json:"extattrs-,omitempty"`
+	IPAddressList              []string             `json:"ip_address_list,omitempty"`
 }
 
 // RangeQueryResult object
