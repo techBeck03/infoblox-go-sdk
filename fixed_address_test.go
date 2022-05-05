@@ -1,3 +1,4 @@
+//go:build all || unittests
 // +build all unittests
 
 package infoblox
@@ -18,7 +19,7 @@ var (
 	}
 	fixedAddressClient = New(fixedAddressConfig)
 	testFixedAddress   = FixedAddress{
-		IPAddress:   "172.19.4.1",
+		IPAddress:   "172.19.10.1",
 		Comment:     "Gateway",
 		MatchClient: "RESERVED",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -28,7 +29,7 @@ var (
 		}),
 	}
 	fixedAddressTestNetwork = Network{
-		CIDR:        "172.19.4.0/24",
+		CIDR:        "172.19.10.0/24",
 		NetworkView: "default",
 		Comment:     "testing",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -36,7 +37,7 @@ var (
 				Value: "testUser",
 			},
 			"Gateway": ExtensibleAttributeValue{
-				Value: "172.19.4.1",
+				Value: "172.19.10.1",
 			},
 		}),
 	}

@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"sync"
 )
 
 // Config - Configuration details for connecting to infoblox
@@ -28,6 +29,7 @@ type Client struct {
 	cookies         []*http.Cookie
 	eaDefinitions   []EADefinition
 	OrchestratorEAs *ExtensibleAttribute
+	SequentialLock  sync.Mutex
 }
 
 // New - creates a new infoblox client
@@ -108,7 +110,7 @@ func (c *Client) Call(request *http.Request, result interface{}) *ResponseError 
 			StatusCode:   response.StatusCode,
 			Request:      fmt.Sprintf("%+v", request),
 			ResponseBody: fmt.Sprintf("%+v", responseBody),
-			ErrorMessage: fmt.Sprintf("Request %+v\n failed with status code %d\n response %+v\n%+v", request,
+			ErrorMessage: fmt.Sprintf("Request %+v\n failed with status code %d\n response %+v", request,
 				response.StatusCode, responseBody),
 		}
 	}

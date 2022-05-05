@@ -1,8 +1,10 @@
-// +build all unittests
+//go:build all || unittests || specific
+// +build all unittests specific
 
 package infoblox
 
 import (
+	"log"
 	"os"
 	"testing"
 )
@@ -18,10 +20,10 @@ var (
 	}
 	rangeClient = New(rangeConfig)
 	testRange   = Range{
-		CIDR:         "172.19.4.0/24",
+		CIDR:         "172.19.10.0/24",
 		NetworkView:  "default",
-		StartAddress: "172.19.4.10",
-		EndAddress:   "172.19.4.20",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.19",
 		Comment:      "Test Block",
 		DisableDHCP:  newBool(true),
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -30,8 +32,33 @@ var (
 			},
 		}),
 	}
+	testRangeSequential = Range{
+		CIDR:         "172.19.10.0/24",
+		NetworkView:  "default",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.19",
+		Comment:      "Test Block",
+		DisableDHCP:  newBool(true),
+		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
+			"Owner": ExtensibleAttributeValue{
+				Value: "testUser",
+			},
+		}),
+	}
+	rangeTestSequentialQuery1 = AddressQuery{
+		CIDR:  "172.19.10.0/24",
+		Count: 20,
+	}
+	rangeTestSequentialQuery2 = AddressQuery{
+		CIDR:  "172.19.10.0/24",
+		Count: 20,
+	}
+	rangeTestSequentialQuery3 = AddressQuery{
+		CIDR:  "172.19.10.0/24",
+		Count: 20,
+	}
 	rangeTestNetwork = Network{
-		CIDR:        "172.19.4.0/24",
+		CIDR:        "172.19.10.0/24",
 		NetworkView: "default",
 		Comment:     "testing",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -39,13 +66,24 @@ var (
 				Value: "testUser",
 			},
 			"Gateway": ExtensibleAttributeValue{
-				Value: "172.19.4.1",
+				Value: "172.19.10.1",
 			},
 		}),
 	}
 )
 
-func TestCreateRange(t *testing.T) {
+func TestRange(t *testing.T) {
+	t.Cleanup(cleanup)
+	t.Run("", createRange)
+	t.Run("", getRange)
+	t.Run("", updateRange)
+	t.Run("", deleteRange)
+	t.Run("", createSequentialRange1)
+	t.Run("", createSequentialRange2)
+	t.Run("", createSequentialRange3)
+}
+
+func createRange(t *testing.T) {
 	err := rangeClient.CreateNetwork(&rangeTestNetwork)
 	if err != nil {
 		t.Errorf("Error creating network: %s", err)
@@ -56,7 +94,29 @@ func TestCreateRange(t *testing.T) {
 	}
 }
 
-func TestGetRange(t *testing.T) {
+func createSequentialRange1(t *testing.T) {
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery1)
+	if err != nil {
+		t.Errorf("Error creating range: %s", err)
+	}
+}
+func createSequentialRange2(t *testing.T) {
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery2)
+	if err != nil {
+		t.Errorf("Error creating range: %s", err)
+	}
+}
+func createSequentialRange3(t *testing.T) {
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery3)
+	if err != nil {
+		t.Errorf("Error creating range: %s", err)
+	}
+}
+
+func getRange(t *testing.T) {
 	rangeObject, err := rangeClient.GetRangeByRef(testRange.Ref, nil)
 	if err != nil {
 		t.Errorf("Error retrieving range: %s", err)
@@ -64,9 +124,9 @@ func TestGetRange(t *testing.T) {
 	prettyPrint(rangeObject)
 }
 
-func TestUpdateRange(t *testing.T) {
+func updateRange(t *testing.T) {
 	updates := Range{
-		EndAddress: "172.19.4.22",
+		EndAddress: "172.19.10.22",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Location": ExtensibleAttributeValue{
 				Value: "austin",
@@ -85,20 +145,20 @@ func TestUpdateRange(t *testing.T) {
 	testRange = rangeObject
 }
 
-func TestDeleteRange(t *testing.T) {
+func deleteRange(t *testing.T) {
 	err := rangeClient.DeleteRange(testRange.Ref)
 	if err != nil {
 		t.Errorf("Error deleting range: %s", err)
 	}
-	err = rangeClient.DeleteNetwork(rangeTestNetwork.Ref)
-	if err != nil {
-		t.Errorf("Error deleting network: %s", err)
-	}
 }
 
-func TestLogoutRange(t *testing.T) {
-	err := rangeClient.Logout()
+func cleanup() {
+	err := rangeClient.DeleteNetwork(rangeTestNetwork.Ref)
 	if err != nil {
-		t.Errorf("Error logging out: %s", err)
+		log.Printf("Error deleting network: %s", err)
+	}
+	err = rangeClient.Logout()
+	if err != nil {
+		log.Printf("Error logging out: %s", err)
 	}
 }

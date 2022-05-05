@@ -130,7 +130,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 			}
 			endIndex++
 		}
-		if matchFlag == false && ret.NextPageID != "" {
+		if !matchFlag && ret.NextPageID != "" {
 			prevPage = ret.Results
 			queryParams["_page_id"] = ret.NextPageID
 			queryParamString := c.BuildQuery(queryParams)
@@ -144,8 +144,8 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 			if response != nil {
 				return &addresses, fmt.Errorf(response.ErrorMessage)
 			}
-		} else if matchFlag == false && ret.NextPageID == "" {
-			return &addresses, fmt.Errorf("No sequential block found for supplied count")
+		} else if !matchFlag && ret.NextPageID == "" {
+			return &addresses, fmt.Errorf("no sequential block found for supplied count")
 		}
 	}
 	return &addresses, nil

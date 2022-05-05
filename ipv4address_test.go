@@ -1,4 +1,5 @@
-// +build all unittests specific
+//go:build all || unittests
+// +build all unittests
 
 package infoblox
 
@@ -22,19 +23,19 @@ var (
 		Count: 20,
 	}
 	ipv4AddressSequentialQuery2 = AddressQuery{
-		CIDR:  "172.19.4.0/24",
+		CIDR:  "172.19.10.0/24",
 		Count: 20,
 	}
 	ipv4AddressVerifyQuery = AddressQuery{
-		CIDR:         "172.19.4.0/24",
-		StartAddress: "172.19.4.10",
-		EndAddress:   "172.19.4.20",
+		CIDR:         "172.19.10.0/24",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.20",
 	}
 	ipv4AddressTestRange = Range{
-		CIDR:         "172.19.4.0/24",
+		CIDR:         "172.19.10.0/24",
 		NetworkView:  "default",
-		StartAddress: "172.19.4.10",
-		EndAddress:   "172.19.4.20",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.20",
 		Comment:      "Test Block",
 		DisableDHCP:  newBool(true),
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -44,7 +45,7 @@ var (
 		}),
 	}
 	ipv4AddressTestNetwork = Network{
-		CIDR:        "172.19.4.0/24",
+		CIDR:        "172.19.10.0/24",
 		NetworkView: "default",
 		Comment:     "testing",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
@@ -52,7 +53,7 @@ var (
 				Value: "testUser",
 			},
 			"Gateway": ExtensibleAttributeValue{
-				Value: "172.19.4.1",
+				Value: "172.19.10.1",
 			},
 		}),
 	}
@@ -62,8 +63,8 @@ var (
 		EnableDNS:   newBool(true),
 		IPv4Addrs: []IPv4Addr{
 			{
-				//IPAddress: "func:nextavailableip:172.19.4.0/24",
-				IPAddress: "172.19.4.12",
+				//IPAddress: "func:nextavailableip:172.19.10.0/24",
+				IPAddress: "172.19.10.12",
 			},
 		},
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{

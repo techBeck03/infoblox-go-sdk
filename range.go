@@ -129,7 +129,7 @@ func (c *Client) UpdateRange(ref string, rangeObject Range) (Range, error) {
 
 // DeleteRange deletes range
 func (c *Client) DeleteRange(ref string) error {
-	request, err := c.CreateJSONRequest(http.MethodDelete, fmt.Sprintf("%s", ref), nil)
+	request, err := c.CreateJSONRequest(http.MethodDelete, ref, nil)
 	if err != nil {
 		return err
 	}
@@ -146,11 +146,12 @@ func (c *Client) DeleteRange(ref string) error {
 
 // CreateSequentialRange creates sequential address range
 func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) error {
+	c.SequentialLock.Lock()
+	defer c.SequentialLock.Unlock()
 	query.fillDefaults()
 	retryCount := 0
 	verified := false
-
-	for verified == false && retryCount <= query.Retries {
+	for !verified && retryCount <= query.Retries {
 		sequentialAddresses, err := c.GetSequentialAddressRange(query)
 		if err != nil {
 			return err
@@ -161,6 +162,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		err = c.CreateRange(rangeObject)
 		if err != nil {
 			verified = false
+			time.Sleep(1 * time.Second)
 		} else {
 			log.Println("Pausing for race condition checks")
 			time.Sleep(1 * time.Second)
@@ -188,8 +190,8 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		}
 	}
 
-	if verified == false {
-		return fmt.Errorf("Unable to create sequential range within %s", query.CIDR)
+	if !verified {
+		return fmt.Errorf("unable to create sequential range within %s", query.CIDR)
 	}
 
 	return nil
@@ -225,14 +227,14 @@ func (c *Client) CheckIfRangeContainsRange(query IPsWithinRangeQuery) (bool, err
 
 	matchFlag := false
 
-	for matchFlag == false {
+	for !matchFlag {
 		for _, addressRange := range ret.Results {
 			if addressRange.Ref != query.Ref && (ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.StartAddress) || ipWithinRange(addressRange.StartAddress, addressRange.EndAddress, query.EndAddress)) {
 				matchFlag = true
 				break
 			}
 		}
-		if matchFlag == false && ret.NextPageID != "" {
+		if !matchFlag && ret.NextPageID != "" {
 			queryParams["_page_id"] = ret.NextPageID
 			queryParamString := c.BuildQuery(queryParams)
 
@@ -245,7 +247,7 @@ func (c *Client) CheckIfRangeContainsRange(query IPsWithinRangeQuery) (bool, err
 			if response != nil {
 				return true, fmt.Errorf(response.ErrorMessage)
 			}
-		} else if matchFlag == false && ret.NextPageID == "" {
+		} else if !matchFlag && ret.NextPageID == "" {
 			return false, nil
 		}
 	}
