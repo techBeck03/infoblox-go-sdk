@@ -1,4 +1,4 @@
-module github.com/techBeck03/infoblox
+module github.com/techBeck03/infoblox-go-sdk
 
 go 1.18
 
