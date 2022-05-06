@@ -67,12 +67,12 @@ func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error)
 		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
-	for _, r := range ret.Results {
+	for i, r := range ret.Results {
 		startingIP := ipmath.IP{
 			Address: net.ParseIP(r.StartAddress),
 		}
 		count := startingIP.Difference(net.ParseIP(r.EndAddress)) + 1
-		r.IPAddressList = getRangeAddressList(r.StartAddress, count)
+		ret.Results[i].IPAddressList = getRangeAddressList(r.StartAddress, count)
 	}
 
 	return ret.Results, nil
