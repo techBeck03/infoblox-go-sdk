@@ -32,12 +32,38 @@ var (
 			},
 		}),
 	}
-	testRangeSequential = Range{
+	testRangeSequential1 = Range{
 		CIDR:         "172.19.10.0/24",
 		NetworkView:  "default",
 		StartAddress: "172.19.10.10",
 		EndAddress:   "172.19.10.19",
-		Comment:      "Test Block",
+		Comment:      "Test Sequential Block 1",
+		DisableDHCP:  newBool(true),
+		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
+			"Owner": ExtensibleAttributeValue{
+				Value: "testUser",
+			},
+		}),
+	}
+	testRangeSequential2 = Range{
+		CIDR:         "172.19.10.0/24",
+		NetworkView:  "default",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.19",
+		Comment:      "Test Sequential Block 2",
+		DisableDHCP:  newBool(true),
+		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
+			"Owner": ExtensibleAttributeValue{
+				Value: "testUser",
+			},
+		}),
+	}
+	testRangeSequential3 = Range{
+		CIDR:         "172.19.10.0/24",
+		NetworkView:  "default",
+		StartAddress: "172.19.10.10",
+		EndAddress:   "172.19.10.19",
+		Comment:      "Test Sequential Block 3",
 		DisableDHCP:  newBool(true),
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Owner": ExtensibleAttributeValue{
@@ -95,22 +121,22 @@ func createRange(t *testing.T) {
 }
 
 func createSequentialRange1(t *testing.T) {
-	// t.Parallel()
-	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery1)
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential1, rangeTestSequentialQuery1)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)
 	}
 }
 func createSequentialRange2(t *testing.T) {
-	// t.Parallel()
-	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery2)
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential2, rangeTestSequentialQuery2)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)
 	}
 }
 func createSequentialRange3(t *testing.T) {
-	// t.Parallel()
-	err := rangeClient.CreateSequentialRange(&testRangeSequential, rangeTestSequentialQuery3)
+	t.Parallel()
+	err := rangeClient.CreateSequentialRange(&testRangeSequential3, rangeTestSequentialQuery3)
 	if err != nil {
 		t.Errorf("Error creating range: %s", err)
 	}
@@ -121,7 +147,6 @@ func getRange(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error retrieving range: %s", err)
 	}
-	prettyPrint(rangeObject)
 }
 
 func updateRange(t *testing.T) {

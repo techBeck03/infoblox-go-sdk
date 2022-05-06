@@ -38,10 +38,16 @@ func (c *Client) GetRangeByRef(ref string, queryParams map[string]string) (Range
 		return ret, fmt.Errorf(response.ErrorMessage)
 	}
 
+	startingIP := ipmath.IP{
+		Address: net.ParseIP(ret.StartAddress),
+	}
+	count := startingIP.Difference(net.ParseIP(ret.EndAddress)) + 1
+	ret.IPAddressList = getRangeAddressList(ret.StartAddress, count)
+
 	return ret, nil
 }
 
-// GetRangeByQuery gets range by reference
+// GetRangeByQuery gets range by query
 func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error) {
 	var ret RangeQueryResult
 
@@ -61,7 +67,27 @@ func (c *Client) GetRangeByQuery(queryParams map[string]string) ([]Range, error)
 		return nil, fmt.Errorf(response.ErrorMessage)
 	}
 
+	for _, r := range ret.Results {
+		startingIP := ipmath.IP{
+			Address: net.ParseIP(r.StartAddress),
+		}
+		count := startingIP.Difference(net.ParseIP(r.EndAddress)) + 1
+		r.IPAddressList = getRangeAddressList(r.StartAddress, count)
+	}
+
 	return ret.Results, nil
+}
+
+func getRangeAddressList(startAddress string, count int) []string {
+	ipAddressList := []string{}
+	startingIP := ipmath.IP{
+		Address: net.ParseIP(startAddress),
+	}
+	for i := 0; i < count; i++ {
+		ipAddressList = append(ipAddressList, startingIP.ToIPString())
+		startingIP.Inc()
+	}
+	return ipAddressList
 }
 
 // GetPaginatedCidrRanges gets ranges within CIDR by page
@@ -108,16 +134,11 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 	if response != nil {
 		return fmt.Errorf(response.ErrorMessage)
 	}
-	ipAddressList := []string{}
 	startingIP := ipmath.IP{
 		Address: net.ParseIP(rangeObject.StartAddress),
 	}
-	count := startingIP.Difference(net.ParseIP(rangeObject.EndAddress))
-	for i := 0; i <= count; i++ {
-		ipAddressList = append(ipAddressList, startingIP.ToIPString())
-		startingIP.Inc()
-	}
-	rangeObject.IPAddressList = ipAddressList
+	count := startingIP.Difference(net.ParseIP(rangeObject.EndAddress)) + 1
+	rangeObject.IPAddressList = getRangeAddressList(rangeObject.StartAddress, count)
 	return nil
 }
 
@@ -206,15 +227,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 	if !verified {
 		return fmt.Errorf("unable to create sequential range within %s", query.CIDR)
 	}
-	ipAddressList := []string{}
-	startingIP := ipmath.IP{
-		Address: net.ParseIP(rangeObject.StartAddress),
-	}
-	for i := 1; i <= query.Count; i++ {
-		ipAddressList = append(ipAddressList, startingIP.ToIPString())
-		startingIP.Inc()
-	}
-	rangeObject.IPAddressList = ipAddressList
+	rangeObject.IPAddressList = getRangeAddressList(rangeObject.StartAddress, query.Count)
 	return nil
 }
 
