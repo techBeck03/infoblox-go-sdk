@@ -81,20 +81,20 @@ type Network struct {
 
 // NetworkFromContainer object
 type NetworkFromContainer struct {
-	Ref                        string               `json:"_ref,omitempty"`
-	NetworkView                string               `json:"network_view,omitempty"`
-	Network                    NetworkContainer     `json:"network,omitempty"`
-	Comment                    string               `json:"comment,omitempty"`
-	DisableDHCP                *bool                `json:"disable,omitempty"`
-	Members                    []Member             `json:"members,omitempty"`
-	Options                    []Option             `json:"options,omitempty"`
-	ExtensibleAttributes       *ExtensibleAttribute `json:"extattrs,omitempty"`
-	ExtensibleAttributesAdd    *ExtensibleAttribute `json:"extattrs+,omitempty"`
-	ExtensibleAttributesRemove *ExtensibleAttribute `json:"extattrs-,omitempty"`
+	Ref                        string                   `json:"_ref,omitempty"`
+	NetworkView                string                   `json:"network_view,omitempty"`
+	Network                    NetworkContainerFunction `json:"network,omitempty"`
+	Comment                    string                   `json:"comment,omitempty"`
+	DisableDHCP                *bool                    `json:"disable,omitempty"`
+	Members                    []Member                 `json:"members,omitempty"`
+	Options                    []Option                 `json:"options,omitempty"`
+	ExtensibleAttributes       *ExtensibleAttribute     `json:"extattrs,omitempty"`
+	ExtensibleAttributesAdd    *ExtensibleAttribute     `json:"extattrs+,omitempty"`
+	ExtensibleAttributesRemove *ExtensibleAttribute     `json:"extattrs-,omitempty"`
 }
 
-// NetworkContainer object
-type NetworkContainer struct {
+// NetworkContainerFunction object
+type NetworkContainerFunction struct {
 	Function         string                           `json:"_object_function,omitempty"`
 	ResultField      string                           `json:"_result_field,omitempty"`
 	Object           string                           `json:"_object,omitempty"`

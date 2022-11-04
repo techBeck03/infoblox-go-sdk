@@ -32,7 +32,7 @@ var (
 		}),
 	}
 	testNetworkFromContainer = NetworkFromContainer{
-		Network: NetworkContainer{
+		Network: NetworkContainerFunction{
 			Function:    "next_available_network",
 			ResultField: "networks",
 			Object:      "networkcontainer",
