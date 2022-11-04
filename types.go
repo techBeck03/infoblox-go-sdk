@@ -79,6 +79,39 @@ type Network struct {
 	ExtensibleAttributesRemove *ExtensibleAttribute `json:"extattrs-,omitempty"`
 }
 
+// NetworkFromContainer object
+type NetworkFromContainer struct {
+	Ref                        string               `json:"_ref,omitempty"`
+	NetworkView                string               `json:"network_view,omitempty"`
+	Network                    NetworkContainer     `json:"network,omitempty"`
+	Comment                    string               `json:"comment,omitempty"`
+	DisableDHCP                *bool                `json:"disable,omitempty"`
+	Members                    []Member             `json:"members,omitempty"`
+	Options                    []Option             `json:"options,omitempty"`
+	ExtensibleAttributes       *ExtensibleAttribute `json:"extattrs,omitempty"`
+	ExtensibleAttributesAdd    *ExtensibleAttribute `json:"extattrs+,omitempty"`
+	ExtensibleAttributesRemove *ExtensibleAttribute `json:"extattrs-,omitempty"`
+}
+
+// NetworkContainer object
+type NetworkContainer struct {
+	Function         string                           `json:"_object_function,omitempty"`
+	ResultField      string                           `json:"_result_field,omitempty"`
+	Object           string                           `json:"_object,omitempty"`
+	ObjectParameters *NetworkContainerObjectParameter `json:"_object_parameters,omitempty"`
+	Parameters       *NetworkContainerParameter       `json:"_parameters,omitempty"`
+}
+
+// NetworkContainerObjectParameter object
+type NetworkContainerObjectParameter struct {
+	Label string `json:"*Label,omitempty"`
+}
+
+// NetworkContainerParameter object
+type NetworkContainerParameter struct {
+	Prefix int `json:"cidr,omitempty"`
+}
+
 // NetworkQueryResult object
 type NetworkQueryResult struct {
 	NextPageID string    `json:"next_page_id,omitempty"`

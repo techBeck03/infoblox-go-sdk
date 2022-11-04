@@ -1,5 +1,5 @@
-//go:build all || unittests || specific
-// +build all unittests specific
+//go:build all || unittests
+// +build all unittests
 
 package infoblox
 

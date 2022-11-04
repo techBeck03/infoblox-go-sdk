@@ -1,5 +1,5 @@
-//go:build all || unittests
-// +build all unittests
+//go:build all || unittests || specific
+// +build all unittests specific
 
 package infoblox
 
@@ -31,7 +31,32 @@ var (
 			},
 		}),
 	}
+	testNetworkFromContainer = NetworkFromContainer{
+		Network: NetworkContainer{
+			Function:    "next_available_network",
+			ResultField: "networks",
+			Object:      "networkcontainer",
+			ObjectParameters: newNetworkContainerObjectParameter(NetworkContainerObjectParameter{
+				Label: "Autonets",
+			}),
+			Parameters: newNetworkContainerParameter(NetworkContainerParameter{
+				Prefix: 24,
+			}),
+		},
+		NetworkView: "default",
+		Comment:     "testing",
+		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
+			"Owner": ExtensibleAttributeValue{
+				Value: "testUser",
+			},
+			"Gateway": ExtensibleAttributeValue{
+				Value: "172.19.4.1",
+			},
+		}),
+	}
 )
+
+var testNetworkFromContainerResolved Network
 
 func TestCreateNetwork(t *testing.T) {
 	err := networkClient.CreateNetwork(&testNetwork)
@@ -71,6 +96,49 @@ func TestUpdateNetwork(t *testing.T) {
 
 func TestDeleteNetwork(t *testing.T) {
 	err := networkClient.DeleteNetwork(testNetwork.Ref)
+	if err != nil {
+		t.Errorf("Error deleting network: %s", err)
+	}
+}
+
+func TestCreateNetworkFromContainer(t *testing.T) {
+	network, err := networkClient.CreateNetworkFromContainer(&testNetworkFromContainer)
+	if err != nil {
+		t.Errorf("Error creating network: %s", err)
+	}
+	testNetworkFromContainerResolved = network
+}
+
+func TestGetNetworkCreatedFromContainer(t *testing.T) {
+	network, err := networkClient.GetNetworkByRef(testNetworkFromContainerResolved.Ref, nil)
+	if err != nil {
+		t.Errorf("Error retrieving network: %s", err)
+	}
+	prettyPrint(network)
+}
+
+func TestUpdateNetworkCreatedFromContainer(t *testing.T) {
+	updates := Network{
+		Comment: "testing2",
+		ExtensibleAttributesAdd: newExtensibleAttribute(ExtensibleAttribute{
+			"Location": ExtensibleAttributeValue{
+				Value: "austin",
+			},
+		}),
+	}
+	network, err := networkClient.UpdateNetwork(testNetworkFromContainerResolved.Ref, updates)
+	if err != nil {
+		t.Errorf("Error retrieving network: %s", err)
+	}
+	eas := *network.ExtensibleAttributes
+	if eas["Location"].Value.(string) != "austin" {
+		t.Errorf("Error updating network. EA value does not match expected value")
+	}
+	prettyPrint(network)
+}
+
+func TestDeleteNetworkCreatedFromContainer(t *testing.T) {
+	err := networkClient.DeleteNetwork(testNetworkFromContainerResolved.Ref)
 	if err != nil {
 		t.Errorf("Error deleting network: %s", err)
 	}
