@@ -121,6 +121,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 							startIndex++
 						}
 					}
+					break
 				}
 			}
 			if len(prevPage) > 0 && startIndex == len(prevPage)-1 {

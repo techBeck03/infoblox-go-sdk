@@ -197,6 +197,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		if err != nil {
 			verified = false
 			time.Sleep(1 * time.Second)
+			retryCount++
 		} else {
 			log.Println("Pausing for race condition checks")
 			time.Sleep(1 * time.Second)
