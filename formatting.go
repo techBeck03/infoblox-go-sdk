@@ -16,14 +16,6 @@ func newExtensibleAttribute(ea ExtensibleAttribute) *ExtensibleAttribute {
 	return &ea
 }
 
-func newNetworkContainerObjectParameter(objParam NetworkContainerObjectParameter) *NetworkContainerObjectParameter {
-	return &objParam
-}
-
-func newNetworkContainerParameter(param NetworkContainerParameter) *NetworkContainerParameter {
-	return &param
-}
-
 func newBool(b bool) *bool {
 	return &b
 }

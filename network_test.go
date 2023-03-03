@@ -1,5 +1,5 @@
-//go:build all || unittests || specific
-// +build all unittests specific
+//go:build all || unittests
+// +build all unittests
 
 package infoblox
 
@@ -19,15 +19,35 @@ var (
 	}
 	networkClient = New(networkConfig)
 	testNetwork   = Network{
-		CIDR:        "172.19.4.0/24",
+		CIDR:        "172.19.10.0/24",
 		NetworkView: "default",
-		Comment:     "testing",
+		Comment:     "Static Testing",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Owner": ExtensibleAttributeValue{
 				Value: "testUser",
 			},
 			"Gateway": ExtensibleAttributeValue{
-				Value: "172.19.4.1",
+				Value: "172.19.10.1",
+			},
+		}),
+	}
+	testNetworkFromContainerByEa = NetworkFromContainer{
+		Network: NetworkContainerFunction{
+			Function:    "next_available_network",
+			ResultField: "networks",
+			Object:      "networkcontainer",
+			ObjectParameters: map[string]string{
+				"*Label": "Autonets",
+			},
+			Parameters: map[string]int{
+				"cidr": 24,
+			},
+		},
+		NetworkView: "default",
+		Comment:     "Test Auto Network By EA",
+		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
+			"Owner": ExtensibleAttributeValue{
+				Value: "testUser",
 			},
 		}),
 	}
@@ -36,21 +56,18 @@ var (
 			Function:    "next_available_network",
 			ResultField: "networks",
 			Object:      "networkcontainer",
-			ObjectParameters: newNetworkContainerObjectParameter(NetworkContainerObjectParameter{
-				Label: "Autonets",
-			}),
-			Parameters: newNetworkContainerParameter(NetworkContainerParameter{
-				Prefix: 24,
-			}),
+			ObjectParameters: map[string]string{
+				"network": "172.20.0.0/14",
+			},
+			Parameters: map[string]int{
+				"cidr": 24,
+			},
 		},
 		NetworkView: "default",
-		Comment:     "testing",
+		Comment:     "Test Auto Network",
 		ExtensibleAttributes: newExtensibleAttribute(ExtensibleAttribute{
 			"Owner": ExtensibleAttributeValue{
 				Value: "testUser",
-			},
-			"Gateway": ExtensibleAttributeValue{
-				Value: "172.19.4.1",
 			},
 		}),
 	}
@@ -70,7 +87,6 @@ func TestGetNetwork(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error retrieving network: %s", err)
 	}
-	prettyPrint(network)
 }
 
 func TestUpdateNetwork(t *testing.T) {
@@ -90,7 +106,6 @@ func TestUpdateNetwork(t *testing.T) {
 	if eas["Location"].Value.(string) != "austin" {
 		t.Errorf("Error updating network. EA value does not match expected value")
 	}
-	prettyPrint(network)
 	testNetwork = network
 }
 
@@ -114,12 +129,11 @@ func TestGetNetworkCreatedFromContainer(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error retrieving network: %s", err)
 	}
-	prettyPrint(network)
 }
 
 func TestUpdateNetworkCreatedFromContainer(t *testing.T) {
 	updates := Network{
-		Comment: "testing2",
+		Comment: "Test Auto Network Updated",
 		ExtensibleAttributesAdd: newExtensibleAttribute(ExtensibleAttribute{
 			"Location": ExtensibleAttributeValue{
 				Value: "austin",
@@ -134,10 +148,50 @@ func TestUpdateNetworkCreatedFromContainer(t *testing.T) {
 	if eas["Location"].Value.(string) != "austin" {
 		t.Errorf("Error updating network. EA value does not match expected value")
 	}
-	prettyPrint(network)
 }
 
 func TestDeleteNetworkCreatedFromContainer(t *testing.T) {
+	err := networkClient.DeleteNetwork(testNetworkFromContainerResolved.Ref)
+	if err != nil {
+		t.Errorf("Error deleting network: %s", err)
+	}
+}
+
+func TestCreateNetworkFromContainerByEa(t *testing.T) {
+	network, err := networkClient.CreateNetworkFromContainer(&testNetworkFromContainerByEa)
+	if err != nil {
+		t.Errorf("Error creating network: %s", err)
+	}
+	testNetworkFromContainerResolved = network
+}
+
+func TestGetNetworkCreatedFromContainerByEa(t *testing.T) {
+	network, err := networkClient.GetNetworkByRef(testNetworkFromContainerResolved.Ref, nil)
+	if err != nil {
+		t.Errorf("Error retrieving network: %s", err)
+	}
+}
+
+func TestUpdateNetworkCreatedFromContainerByEa(t *testing.T) {
+	updates := Network{
+		Comment: "Test Auto Network By EA Updated",
+		ExtensibleAttributesAdd: newExtensibleAttribute(ExtensibleAttribute{
+			"Location": ExtensibleAttributeValue{
+				Value: "austin",
+			},
+		}),
+	}
+	network, err := networkClient.UpdateNetwork(testNetworkFromContainerResolved.Ref, updates)
+	if err != nil {
+		t.Errorf("Error retrieving network: %s", err)
+	}
+	eas := *network.ExtensibleAttributes
+	if eas["Location"].Value.(string) != "austin" {
+		t.Errorf("Error updating network. EA value does not match expected value")
+	}
+}
+
+func TestDeleteNetworkCreatedFromContainerByEa(t *testing.T) {
 	err := networkClient.DeleteNetwork(testNetworkFromContainerResolved.Ref)
 	if err != nil {
 		t.Errorf("Error deleting network: %s", err)

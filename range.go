@@ -188,6 +188,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 	for !verified && retryCount <= query.Retries {
 		sequentialAddresses, err := c.GetSequentialAddressRange(query)
 		if err != nil {
+			log.Printf("The following error occurred while getting sequential address range: %s", err)
 			return err
 		}
 		rangeObject.StartAddress = (*sequentialAddresses)[0].IPAddress
@@ -217,6 +218,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 				retryCount++
 				err := c.DeleteRange(rangeObject.Ref)
 				if err != nil {
+					log.Printf("The following error occurred deleting range: %s", err)
 					return err
 				}
 			} else {

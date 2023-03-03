@@ -63,6 +63,7 @@ func (c *Client) BuildQuery(params map[string]string) string {
 func (c *Client) CreateJSONRequest(method string, path string, params interface{}) (*http.Request, error) {
 	var request *http.Request
 	var buf bytes.Buffer
+
 	err := json.NewEncoder(&buf).Encode(&params)
 	if err != nil {
 		return request, err
@@ -72,7 +73,7 @@ func (c *Client) CreateJSONRequest(method string, path string, params interface{
 	if err != nil {
 		return request, err
 	}
-	if params == nil {
+	if buf.Len() == 0 {
 		request.Body = http.NoBody
 	}
 	request.Header.Set("Content-Type", "application/json")

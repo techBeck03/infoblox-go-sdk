@@ -80,7 +80,8 @@ func (c *Client) CreateNetwork(network *Network) error {
 func (c *Client) CreateNetworkFromContainer(container *NetworkFromContainer) (Network, error) {
 	var ret Network
 	queryParams := map[string]string{
-		"_return_fields": networkReturnFields,
+		"_return_fields":    networkReturnFields,
+		"_return_as_object": "1",
 	}
 	queryParamString := c.BuildQuery(queryParams)
 	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", networkBasePath, queryParamString), container)
@@ -88,23 +89,17 @@ func (c *Client) CreateNetworkFromContainer(container *NetworkFromContainer) (Ne
 		return ret, err
 	}
 
-	var network Network
-	network.Ref = container.Ref
-	network.Comment = container.Comment
-	network.CIDR = ""
-	network.NetworkView = container.NetworkView
-	network.DisableDHCP = container.DisableDHCP
-	network.Members = container.Members
-	network.Options = container.Options
-	network.ExtensibleAttributes = container.ExtensibleAttributes
-	network.ExtensibleAttributesAdd = container.ExtensibleAttributesAdd
-	network.ExtensibleAttributesRemove = container.ExtensibleAttributesRemove
-
-	response := c.Call(request, &network)
+	var result NetworkFromContainerResult
+	response := c.Call(request, &result)
 	if response != nil {
 		return ret, fmt.Errorf(response.ErrorMessage)
 	}
-	return network, nil
+	ret, err = c.GetNetworkByRef(result.Result.Ref, nil)
+	if err != nil {
+		return ret, fmt.Errorf(response.ErrorMessage)
+	}
+
+	return ret, nil
 }
 
 // UpdateNetwork updates network
@@ -128,7 +123,7 @@ func (c *Client) UpdateNetwork(ref string, network Network) (Network, error) {
 
 // DeleteNetwork deletes network
 func (c *Client) DeleteNetwork(ref string) error {
-	request, err := c.CreateJSONRequest(http.MethodDelete, fmt.Sprintf("%s", ref), nil)
+	request, err := c.CreateJSONRequest(http.MethodDelete, ref, nil)
 	if err != nil {
 		return err
 	}
