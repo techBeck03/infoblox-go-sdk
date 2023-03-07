@@ -202,6 +202,8 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 			verified = false
 			time.Sleep(2 * time.Second)
 			retryCount++
+			log.Printf("An error occurred creating range: %s", err)
+			prettyPrint(rangeObject)
 		} else {
 			log.Println("Pausing for race condition checks")
 			time.Sleep(1 * time.Second)
