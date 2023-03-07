@@ -2,6 +2,7 @@ package infoblox
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 
@@ -56,6 +57,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 		return &addresses, err
 	}
 	for !matchFlag {
+		log.Println("Inside GetSequentialAddressRange matchFlag outer loop")
 		resultsCount := len(ret.Results)
 		if ret.NextPageID == "" && ((len(prevPage) == 0 && resultsCount < query.Count) || (len(prevPage) > 0 && ((len(prevPage)-startIndex)+resultsCount) < query.Count)) {
 			return &addresses, fmt.Errorf("no sequential block found for supplied count")
@@ -67,6 +69,7 @@ func (c *Client) GetSequentialAddressRange(query AddressQuery) (*[]IPv4Address, 
 			endIndex = 0
 		}
 		for endIndex <= resultsCount && !matchFlag {
+			log.Println("Inside GetSequentialAddressRange matchFlag inner loop")
 			var currentMatch ipmath.IP
 			var lastMatch ipmath.IP
 
