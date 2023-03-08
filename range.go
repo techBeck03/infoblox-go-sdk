@@ -3,6 +3,7 @@ package infoblox
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"net/http"
 	"time"
@@ -125,6 +126,7 @@ func (c *Client) CreateRange(rangeObject *Range) error {
 		"_return_fields": rangeReturnFields,
 	}
 	queryParamString := c.BuildQuery(queryParams)
+	rangeObject.IPAddressList = []string{}
 	request, err := c.CreateJSONRequest(http.MethodPost, fmt.Sprintf("%s?%s", rangeBasePath, queryParamString), rangeObject)
 	if err != nil {
 		return err
@@ -186,7 +188,6 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 	retryCount := 0
 	verified := false
 	for !verified && retryCount <= query.Retries {
-		prettyPrint(query)
 		log.Println("Getting sequential range")
 		sequentialAddresses, err := c.GetSequentialAddressRange(query)
 		if err != nil {
@@ -197,13 +198,13 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 		rangeObject.EndAddress = (*sequentialAddresses)[len(*sequentialAddresses)-1].IPAddress
 
 		log.Println("Creating range")
+		time.Sleep(10 * time.Second)
 		err = c.CreateRange(rangeObject)
 		if err != nil {
 			verified = false
 			time.Sleep(2 * time.Second)
 			retryCount++
 			log.Printf("An error occurred creating range: %s", err)
-			prettyPrint(rangeObject)
 		} else {
 			log.Println("Pausing for race condition checks")
 			time.Sleep(1 * time.Second)
@@ -219,7 +220,6 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 				return err
 			}
 			if len((*usedAddresses)) > 0 {
-				prettyPrint(rangeObject)
 				log.Println("Found allocated addresses within newly created range.  Deleting and Recreating.....")
 				retryCount++
 				err := c.DeleteRange(rangeObject.Ref)
@@ -227,7 +227,7 @@ func (c *Client) CreateSequentialRange(rangeObject *Range, query AddressQuery) e
 					log.Printf("The following error occurred deleting range: %s", err)
 					return err
 				}
-				time.Sleep(1 * time.Second)
+				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 			} else {
 				verified = true
 			}

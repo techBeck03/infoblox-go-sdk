@@ -263,7 +263,7 @@ func (aq *AddressQuery) fillDefaults() {
 		aq.NetworkView = "default"
 	}
 	if aq.Retries == 0 {
-		aq.Retries = 3
+		aq.Retries = 5
 	}
 	if aq.FilterEmptyHostnames == nil {
 		aq.FilterEmptyHostnames = newBool(false)
